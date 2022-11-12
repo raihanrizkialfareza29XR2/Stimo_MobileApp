@@ -25,6 +25,12 @@ TextStyle orangeTextStyle = GoogleFonts.poppins(color: youngRedColor);
 
 TextStyle dangerTextStyle = GoogleFonts.poppins(color: redDangerColor);
 
+TextStyle orangemangoTextStyle = GoogleFonts.poppins(color: Color(0xffFF8A00));
+
+TextStyle blackboldTextStyle = GoogleFonts.poppins(color: Color(0xff000000));
+
+TextStyle blueseaTextStyle = GoogleFonts.poppins(color: Color(0xff013ACD));
+
 FontWeight light = FontWeight.w300;
 FontWeight regular = FontWeight.w400;
 FontWeight medium = FontWeight.w500;

@@ -5,6 +5,8 @@ import 'package:curved_navigation_bar/curved_navigation_bar.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:stimo/pages/berita_resmi_page.dart';
+import 'package:stimo/pages/indikator_strategis.dart';
+import 'package:stimo/pages/infografis_page.dart';
 import 'package:stimo/pages/publikasi_page.dart';
 import 'package:stimo/pages/statistik_fe_page.dart';
 import 'package:stimo/theme.dart';
@@ -31,23 +33,23 @@ class _StatistikPageState extends State<StatistikPage> {
         animationDuration: Duration(milliseconds: 300),
         items: [
           Icon(
-            Icons.search,
-            color: whiteColor,
-          ),
-          Icon(
-            Icons.qr_code,
-            color: whiteColor,
-          ),
-          Icon(
             Icons.home,
             color: whiteColor,
           ),
           Icon(
-            Icons.search,
+            Icons.newspaper,
             color: whiteColor,
           ),
           Icon(
-            Icons.account_circle_rounded,
+            Icons.book,
+            color: whiteColor,
+          ),
+          Icon(
+            Icons.drag_indicator,
+            color: whiteColor,
+          ),
+          Icon(
+            Icons.image,
             color: whiteColor,
           ),
         ],
@@ -77,10 +79,10 @@ class _StatistikPageState extends State<StatistikPage> {
         widget = const BeritaResmi();
         break;
       case 3:
-        widget = const Kategori();
+        widget = const IndikatorStrategis();
         break;
       default:
-        widget = const StatistikFEPage();
+        widget = const InfografisPage();
         break;
     }
     return widget;

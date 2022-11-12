@@ -167,27 +167,32 @@ class StatistikFEPage extends StatelessWidget {
                             ],
                           ),
                           SizedBox(
-                            width: 60,
+                            width: 50,
                           ),
-                          Column(
-                            children: [
-                              Image.asset(
-                                'assets/images/botkotak.png',
-                              ),
-                              SizedBox(
-                                height: 5,
-                              ),
-                              Text(
-                                'Asisten Virtual',
-                                style: blackTextStyle.copyWith(
-                                  fontSize: 10,
-                                  fontWeight: semiBold,
+                          TextButton(
+                            onPressed: () {
+                              Navigator.pushNamed(context, '/grafik');
+                            },
+                            child: Column(
+                              children: [
+                                Image.asset(
+                                  'assets/images/botkotak.png',
                                 ),
-                              ),
-                            ],
+                                SizedBox(
+                                  height: 5,
+                                ),
+                                Text(
+                                  'Asisten Virtual',
+                                  style: blackTextStyle.copyWith(
+                                    fontSize: 10,
+                                    fontWeight: semiBold,
+                                  ),
+                                ),
+                              ],
+                            ),
                           ),
                           SizedBox(
-                            width: 60,
+                            width: 45,
                           ),
                           Column(
                             children: [
@@ -239,27 +244,32 @@ class StatistikFEPage extends StatelessWidget {
                             ],
                           ),
                           SizedBox(
-                            width: 60,
+                            width: 50,
                           ),
-                          Column(
-                            children: [
-                              Image.asset(
-                                'assets/images/konsulkotak.png',
-                              ),
-                              SizedBox(
-                                height: 5,
-                              ),
-                              Text(
-                                'Konsultasi',
-                                style: blackTextStyle.copyWith(
-                                  fontSize: 10,
-                                  fontWeight: semiBold,
+                          TextButton(
+                            onPressed: () {
+                              Navigator.pushNamed(context, '/tabel');
+                            },
+                            child: Column(
+                              children: [
+                                Image.asset(
+                                  'assets/images/konsulkotak.png',
                                 ),
-                              ),
-                            ],
+                                SizedBox(
+                                  height: 5,
+                                ),
+                                Text(
+                                  'Konsultasi',
+                                  style: blackTextStyle.copyWith(
+                                    fontSize: 10,
+                                    fontWeight: semiBold,
+                                  ),
+                                ),
+                              ],
+                            ),
                           ),
                           SizedBox(
-                            width: 60,
+                            width: 45,
                           ),
                           Column(
                             children: [

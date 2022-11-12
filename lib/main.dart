@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:stimo/pages/grafik_page.dart';
 import 'package:stimo/pages/onboarding_page.dart';
 import 'package:stimo/pages/publikasi_page.dart';
 import 'package:stimo/pages/statistik_page.dart';
+import 'package:stimo/pages/tabel_page.dart';
 
 void main() => runApp(MyApp());
 
@@ -15,8 +17,8 @@ class MyApp extends StatelessWidget {
       debugShowCheckedModeBanner: false,
       routes: {
         '/': (context) => OnboardingPage(),
-        '/statistik': (context) => StatistikPage(),
-        '/publikasi': (context) => PublikasiPage(),
+        '/tabel': (context) => TabelPage(),
+        '/grafik': (context) => GrafikPage(),
       },
     );
   }
