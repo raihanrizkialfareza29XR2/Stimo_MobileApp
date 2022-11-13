@@ -319,7 +319,7 @@ class GrafikPage extends StatelessWidget {
                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           children: [
                             Text(
-                              'Infografis',
+                              'Grafik',
                               style: blackTextStyle.copyWith(
                                 fontSize: 16,
                                 fontWeight: semiBold,
@@ -327,7 +327,7 @@ class GrafikPage extends StatelessWidget {
                             ),
                             Container(
                               margin: EdgeInsets.only(
-                                left: 80,
+                                left: 110,
                               ),
                               width: 88,
                               height: 24,

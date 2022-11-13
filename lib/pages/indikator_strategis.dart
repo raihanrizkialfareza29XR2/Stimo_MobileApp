@@ -393,7 +393,7 @@ class IndikatorStrategis extends StatelessWidget {
                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           children: [
                             Text(
-                              'Berita Resmi Statistik',
+                              'Indikator Strategis',
                               style: blackTextStyle.copyWith(
                                 fontSize: 16,
                                 fontWeight: semiBold,

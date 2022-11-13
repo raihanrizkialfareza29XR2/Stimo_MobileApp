@@ -141,7 +141,7 @@ class StatistikFEPage extends StatelessWidget {
                 ),
               ),
               Container(
-                margin: EdgeInsets.only(top: 36, left: 20),
+                margin: EdgeInsets.only(top: 36, left: 8),
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
@@ -149,40 +149,21 @@ class StatistikFEPage extends StatelessWidget {
                       alignment: Alignment.center,
                       child: Row(
                         children: [
-                          Column(
-                            children: [
-                              Image.asset(
-                                'assets/images/chatkotak.png',
-                              ),
-                              SizedBox(
-                                height: 5,
-                              ),
-                              Text(
-                                'Chat Kami',
-                                style: blackTextStyle.copyWith(
-                                  fontSize: 10,
-                                  fontWeight: semiBold,
-                                ),
-                              ),
-                            ],
-                          ),
-                          SizedBox(
-                            width: 50,
-                          ),
                           TextButton(
                             onPressed: () {
-                              Navigator.pushNamed(context, '/grafik');
+                              Navigator.pushNamed(context, '/indikator');
                             },
                             child: Column(
                               children: [
                                 Image.asset(
-                                  'assets/images/botkotak.png',
+                                  'assets/images/IndikatorStrategis.png',
+                                  width: 80,
                                 ),
                                 SizedBox(
                                   height: 5,
                                 ),
                                 Text(
-                                  'Asisten Virtual',
+                                  'Indikator Strategis',
                                   style: blackTextStyle.copyWith(
                                     fontSize: 10,
                                     fontWeight: semiBold,
@@ -192,25 +173,57 @@ class StatistikFEPage extends StatelessWidget {
                             ),
                           ),
                           SizedBox(
-                            width: 45,
+                            width: 30,
                           ),
-                          Column(
-                            children: [
-                              Image.asset(
-                                'assets/images/statistik.png',
-                              ),
-                              SizedBox(
-                                height: 5,
-                              ),
-                              Text(
-                                'Indikator Statistik',
-                                style: blackTextStyle.copyWith(
-                                  fontSize: 10,
-                                  fontWeight: semiBold,
+                          TextButton(
+                            onPressed: () {
+                              Navigator.pushNamed(context, '/publikasi');
+                            },
+                            child: Column(
+                              children: [
+                                Image.asset(
+                                  'assets/images/PublikasiMenu.png',
+                                  width: 80,
                                 ),
-                              ),
-                            ],
+                                SizedBox(
+                                  height: 5,
+                                ),
+                                Text(
+                                  'Publikasi',
+                                  style: blackTextStyle.copyWith(
+                                    fontSize: 10,
+                                    fontWeight: semiBold,
+                                  ),
+                                ),
+                              ],
+                            ),
                           ),
+                          SizedBox(
+                            width: 38,
+                          ),
+                          TextButton(
+                            onPressed: () {
+                              Navigator.pushNamed(context, '/infografis');
+                            },
+                            child: Column(
+                              children: [
+                                Image.asset(
+                                  'assets/images/InfografisMenu.png',
+                                  width: 80,
+                                ),
+                                SizedBox(
+                                  height: 5,
+                                ),
+                                Text(
+                                  'Infografis',
+                                  style: blackTextStyle.copyWith(
+                                    fontSize: 10,
+                                    fontWeight: semiBold,
+                                  ),
+                                ),
+                              ],
+                            ),
+                          )
                         ],
                       ),
                     ),
@@ -218,7 +231,7 @@ class StatistikFEPage extends StatelessWidget {
                 ),
               ),
               Container(
-                margin: EdgeInsets.only(top: 30, left: 20),
+                margin: EdgeInsets.only(top: 30, left: 17),
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
@@ -226,29 +239,34 @@ class StatistikFEPage extends StatelessWidget {
                       alignment: Alignment.center,
                       child: Row(
                         children: [
-                          Column(
-                            children: [
-                              Image.asset(
-                                'assets/images/infografi.png',
-                              ),
-                              SizedBox(
-                                height: 5,
-                              ),
-                              Text(
-                                'Infografis',
-                                style: blackTextStyle.copyWith(
-                                  fontSize: 10,
-                                  fontWeight: semiBold,
+                          TextButton(
+                            onPressed: () {
+                              Navigator.pushNamed(context, '/grafik');
+                            },
+                            child: Column(
+                              children: [
+                                Image.asset(
+                                  'assets/images/infografi.png',
                                 ),
-                              ),
-                            ],
+                                SizedBox(
+                                  height: 5,
+                                ),
+                                Text(
+                                  'Grafik',
+                                  style: blackTextStyle.copyWith(
+                                    fontSize: 10,
+                                    fontWeight: semiBold,
+                                  ),
+                                ),
+                              ],
+                            ),
                           ),
                           SizedBox(
-                            width: 50,
+                            width: 35,
                           ),
                           TextButton(
                             onPressed: () {
-                              Navigator.pushNamed(context, '/tabel');
+                              Navigator.pushNamed(context, '/beritaresmi');
                             },
                             child: Column(
                               children: [
@@ -259,7 +277,7 @@ class StatistikFEPage extends StatelessWidget {
                                   height: 5,
                                 ),
                                 Text(
-                                  'Konsultasi',
+                                  'BRS',
                                   style: blackTextStyle.copyWith(
                                     fontSize: 10,
                                     fontWeight: semiBold,
@@ -269,25 +287,31 @@ class StatistikFEPage extends StatelessWidget {
                             ),
                           ),
                           SizedBox(
-                            width: 45,
+                            width: 38,
                           ),
-                          Column(
-                            children: [
-                              Image.asset(
-                                'assets/images/lainnya.png',
-                              ),
-                              SizedBox(
-                                height: 5,
-                              ),
-                              Text(
-                                'Lainnya',
-                                style: blackTextStyle.copyWith(
-                                  fontSize: 10,
-                                  fontWeight: semiBold,
+                          TextButton(
+                            onPressed: () {
+                              Navigator.pushNamed(context, '/tabel');
+                            },
+                            child: Column(
+                              children: [
+                                Image.asset(
+                                  'assets/images/TabelPage.png',
+                                  width: 80,
                                 ),
-                              ),
-                            ],
-                          ),
+                                SizedBox(
+                                  height: 2,
+                                ),
+                                Text(
+                                  'Tabel',
+                                  style: blackTextStyle.copyWith(
+                                    fontSize: 10,
+                                    fontWeight: semiBold,
+                                  ),
+                                ),
+                              ],
+                            ),
+                          )
                         ],
                       ),
                     ),
@@ -602,6 +626,8 @@ class StatistikFEPage extends StatelessWidget {
                   ],
                 ),
               ),
+
+              //Berita Resmi Statistik
               Container(
                 margin: EdgeInsets.only(
                   top: 50,
@@ -612,10 +638,10 @@ class StatistikFEPage extends StatelessWidget {
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
                     Text(
-                      'STATISTIK UMUM',
+                      'Publikasi',
                       style: blackTextStyle.copyWith(
                         fontSize: 18,
-                        fontWeight: bold,
+                        fontWeight: extraBold,
                       ),
                     ),
                     Image.asset(
@@ -626,6 +652,8 @@ class StatistikFEPage extends StatelessWidget {
                   ],
                 ),
               ),
+
+              //Publikasi Statistik Card 1
               Container(
                 margin: EdgeInsets.only(
                   top: 30,
@@ -633,7 +661,7 @@ class StatistikFEPage extends StatelessWidget {
                   right: 20,
                 ),
                 width: 280,
-                height: 130,
+                height: 165,
                 decoration: BoxDecoration(
                   color: Color(0xffFFFFFF),
                   borderRadius: BorderRadius.circular(15),
@@ -653,42 +681,18 @@ class StatistikFEPage extends StatelessWidget {
                       child: Row(
                         children: [
                           SizedBox(
-                            width: 130,
+                            width: 140,
                           ),
                           Column(
                             children: [
                               SizedBox(
-                                height: 10,
+                                height: 15,
                               ),
                               Text(
-                                'Nilai Ekspor Jawa Timur',
+                                'Statistik Daerah Kabupaten\nMojokerto 2022',
                                 style: blackTextStyle.copyWith(
                                   fontSize: 14,
-                                  fontWeight: bold,
-                                ),
-                              ),
-                            ],
-                          ),
-                        ],
-                      ),
-                    ),
-                    Align(
-                      alignment: Alignment.bottomCenter,
-                      child: Row(
-                        children: [
-                          SizedBox(
-                            width: 130,
-                          ),
-                          Column(
-                            children: [
-                              SizedBox(
-                                height: 30,
-                              ),
-                              Text(
-                                'Agustus 2022',
-                                style: grayTextStyle.copyWith(
-                                  fontSize: 10,
-                                  fontWeight: regular,
+                                  fontWeight: extraBold,
                                 ),
                               ),
                             ],
@@ -697,72 +701,139 @@ class StatistikFEPage extends StatelessWidget {
                       ),
                     ),
                     Container(
-                      margin: EdgeInsets.only(
-                        top: 30,
-                        left: 37,
+                      child: Image.asset(
+                        'assets/images/Container.png',
+                        height: 165,
                       ),
-                      child: Align(
-                        alignment: Alignment.bottomCenter,
-                        child: Row(
-                          children: [
-                            SizedBox(
-                              width: 130,
+                    ),
+                    Container(
+                      margin: EdgeInsets.only(
+                        top: 2,
+                      ),
+                      child: Row(
+                        children: [
+                          Container(
+                            margin: EdgeInsets.only(
+                              top: 65,
+                              left: 140,
                             ),
-                            Column(
-                              children: [
-                                SizedBox(
-                                  height: 30,
+                            child: Text(
+                              'Tanggal Rilis : ',
+                              style: blackTextStyle.copyWith(
+                                fontSize: 10,
+                                fontWeight: regular,
+                              ),
+                            ),
+                          ),
+                          Container(
+                            margin: EdgeInsets.only(
+                              top: 66,
+                              left: 1,
+                            ),
+                            child: Text(
+                              '2022-09-28',
+                              style: blueseaTextStyle.copyWith(
+                                fontSize: 10,
+                                fontWeight: regular,
+                              ),
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                    Container(
+                      child: Row(
+                        children: [
+                          Container(
+                            margin: EdgeInsets.only(
+                              top: 90,
+                              left: 140,
+                            ),
+                            child: Text(
+                              'Ukuran File : ',
+                              style: blackTextStyle.copyWith(
+                                fontSize: 10,
+                                fontWeight: regular,
+                              ),
+                            ),
+                          ),
+                          Container(
+                            margin: EdgeInsets.only(
+                              top: 91,
+                              left: 1,
+                            ),
+                            child: Text(
+                              '14,5 MB',
+                              style: blackTextStyle.copyWith(
+                                fontSize: 10,
+                                fontWeight: regular,
+                              ),
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                    Container(
+                      margin: EdgeInsets.only(
+                        top: 125,
+                        left: 140,
+                      ),
+                      child: Row(
+                        children: [
+                          Container(
+                            decoration: BoxDecoration(
+                              borderRadius: BorderRadius.circular(10),
+                              color: Color(0xffFF5252),
+                            ),
+                            child: Container(
+                              margin: EdgeInsets.all(8),
+                              child: Text(
+                                'Unduh',
+                                style: whiteTextStyle.copyWith(
+                                  fontWeight: bold,
+                                  fontSize: 9,
                                 ),
-                                Row(
-                                  mainAxisAlignment:
-                                      MainAxisAlignment.spaceBetween,
-                                  children: [
-                                    Text(
-                                      '2.119.301.537',
-                                      style: GoogleFonts.poppins(
-                                        color: Color(0xffFFA800),
-                                        fontSize: 14,
-                                        fontWeight: semiBold,
+                              ),
+                            ),
+                          ),
+                          SizedBox(
+                            width: 10,
+                          ),
+                          Container(
+                            width: 65,
+                            height: 29,
+                            decoration: BoxDecoration(
+                              borderRadius: BorderRadius.circular(10),
+                              color: Color(0xff3876D3),
+                            ),
+                            child: Row(
+                              children: [
+                                TextButton(
+                                  onPressed: () {
+                                    Navigator.pushNamed(
+                                        context, '/detail_publikasi');
+                                  },
+                                  child: Container(
+                                    child: Text(
+                                      'Pratinjau',
+                                      style: whiteTextStyle.copyWith(
+                                        fontWeight: bold,
+                                        fontSize: 9,
                                       ),
                                     ),
-                                    SizedBox(
-                                      width: 5,
-                                    ),
-                                    Text(
-                                      'Milyar Rupiah',
-                                      style: blackTextStyle.copyWith(
-                                        fontSize: 10,
-                                        fontWeight: regular,
-                                      ),
-                                    ),
-                                  ],
+                                  ),
                                 ),
                               ],
                             ),
-                          ],
-                        ),
-                      ),
-                    ),
-                    Container(
-                      child: Image.asset(
-                        'assets/images/bg-mask.png',
-                        height: 144,
-                      ),
-                    ),
-                    Container(
-                      margin: EdgeInsets.only(
-                        top: 55,
-                        left: 127,
-                      ),
-                      child: Image.asset(
-                        'assets/images/Dollar.png',
-                        width: 30,
-                        height: 30,
+                          ),
+                        ],
                       ),
                     ),
                   ],
                 ),
               ),
+
+              //Publikasi Statistik 2
               Container(
                 margin: EdgeInsets.only(
                   top: 30,
@@ -770,7 +841,7 @@ class StatistikFEPage extends StatelessWidget {
                   right: 20,
                 ),
                 width: 280,
-                height: 130,
+                height: 165,
                 decoration: BoxDecoration(
                   color: Color(0xffFFFFFF),
                   borderRadius: BorderRadius.circular(15),
@@ -790,42 +861,18 @@ class StatistikFEPage extends StatelessWidget {
                       child: Row(
                         children: [
                           SizedBox(
-                            width: 130,
+                            width: 140,
                           ),
                           Column(
                             children: [
                               SizedBox(
-                                height: 10,
+                                height: 15,
                               ),
                               Text(
-                                'Nilai Ekspor Jawa Timur',
+                                'Statistik Daerah Kabupaten\nMojokerto 2022',
                                 style: blackTextStyle.copyWith(
                                   fontSize: 14,
-                                  fontWeight: bold,
-                                ),
-                              ),
-                            ],
-                          ),
-                        ],
-                      ),
-                    ),
-                    Align(
-                      alignment: Alignment.bottomCenter,
-                      child: Row(
-                        children: [
-                          SizedBox(
-                            width: 130,
-                          ),
-                          Column(
-                            children: [
-                              SizedBox(
-                                height: 30,
-                              ),
-                              Text(
-                                'Agustus 2022',
-                                style: grayTextStyle.copyWith(
-                                  fontSize: 10,
-                                  fontWeight: regular,
+                                  fontWeight: extraBold,
                                 ),
                               ),
                             ],
@@ -834,66 +881,132 @@ class StatistikFEPage extends StatelessWidget {
                       ),
                     ),
                     Container(
-                      margin: EdgeInsets.only(
-                        top: 30,
-                        left: 37,
+                      child: Image.asset(
+                        'assets/images/Container.png',
+                        height: 165,
                       ),
-                      child: Align(
-                        alignment: Alignment.bottomCenter,
-                        child: Row(
-                          children: [
-                            SizedBox(
-                              width: 130,
+                    ),
+                    Container(
+                      margin: EdgeInsets.only(
+                        top: 2,
+                      ),
+                      child: Row(
+                        children: [
+                          Container(
+                            margin: EdgeInsets.only(
+                              top: 65,
+                              left: 140,
                             ),
-                            Column(
-                              children: [
-                                SizedBox(
-                                  height: 30,
+                            child: Text(
+                              'Tanggal Rilis : ',
+                              style: blackTextStyle.copyWith(
+                                fontSize: 10,
+                                fontWeight: regular,
+                              ),
+                            ),
+                          ),
+                          Container(
+                            margin: EdgeInsets.only(
+                              top: 66,
+                              left: 1,
+                            ),
+                            child: Text(
+                              '2022-09-28',
+                              style: blueseaTextStyle.copyWith(
+                                fontSize: 10,
+                                fontWeight: regular,
+                              ),
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                    Container(
+                      child: Row(
+                        children: [
+                          Container(
+                            margin: EdgeInsets.only(
+                              top: 90,
+                              left: 140,
+                            ),
+                            child: Text(
+                              'Ukuran File : ',
+                              style: blackTextStyle.copyWith(
+                                fontSize: 10,
+                                fontWeight: regular,
+                              ),
+                            ),
+                          ),
+                          Container(
+                            margin: EdgeInsets.only(
+                              top: 91,
+                              left: 1,
+                            ),
+                            child: Text(
+                              '14,5 MB',
+                              style: blackTextStyle.copyWith(
+                                fontSize: 10,
+                                fontWeight: regular,
+                              ),
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                    Container(
+                      margin: EdgeInsets.only(
+                        top: 125,
+                        left: 140,
+                      ),
+                      child: Row(
+                        children: [
+                          Container(
+                            decoration: BoxDecoration(
+                              borderRadius: BorderRadius.circular(10),
+                              color: Color(0xffFF5252),
+                            ),
+                            child: Container(
+                              margin: EdgeInsets.all(8),
+                              child: Text(
+                                'Unduh',
+                                style: whiteTextStyle.copyWith(
+                                  fontWeight: bold,
+                                  fontSize: 9,
                                 ),
-                                Row(
-                                  mainAxisAlignment:
-                                      MainAxisAlignment.spaceBetween,
-                                  children: [
-                                    Text(
-                                      '2.119.301.537',
-                                      style: GoogleFonts.poppins(
-                                        color: Color(0xffFFA800),
-                                        fontSize: 14,
-                                        fontWeight: semiBold,
+                              ),
+                            ),
+                          ),
+                          SizedBox(
+                            width: 10,
+                          ),
+                          Container(
+                            width: 65,
+                            height: 29,
+                            decoration: BoxDecoration(
+                              borderRadius: BorderRadius.circular(10),
+                              color: Color(0xff3876D3),
+                            ),
+                            child: Row(
+                              children: [
+                                TextButton(
+                                  onPressed: () {
+                                    Navigator.pushNamed(
+                                        context, '/detail_publikasi');
+                                  },
+                                  child: Container(
+                                    child: Text(
+                                      'Pratinjau',
+                                      style: whiteTextStyle.copyWith(
+                                        fontWeight: bold,
+                                        fontSize: 9,
                                       ),
                                     ),
-                                    SizedBox(
-                                      width: 5,
-                                    ),
-                                    Text(
-                                      'Milyar Rupiah',
-                                      style: blackTextStyle.copyWith(
-                                        fontSize: 10,
-                                        fontWeight: regular,
-                                      ),
-                                    ),
-                                  ],
+                                  ),
                                 ),
                               ],
                             ),
-                          ],
-                        ),
-                      ),
-                    ),
-                    Container(
-                      child: Image.asset(
-                        'assets/images/bg-mask.png',
-                      ),
-                    ),
-                    Container(
-                      margin: EdgeInsets.only(
-                        top: 55,
-                        left: 127,
-                      ),
-                      child: Image.asset(
-                        'assets/images/Dollar.png',
-                        width: 30,
-                        height: 30,
+                          ),
+                        ],
                       ),
                     ),
                   ],
@@ -909,7 +1022,7 @@ class StatistikFEPage extends StatelessWidget {
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
                     Text(
-                      'STATISTIK UMUM',
+                      'Berita Resmi Statistik',
                       style: blackTextStyle.copyWith(
                         fontSize: 18,
                         fontWeight: bold,
@@ -923,6 +1036,7 @@ class StatistikFEPage extends StatelessWidget {
                   ],
                 ),
               ),
+              //Berita Resmi Statistik Card 2
               Container(
                 margin: EdgeInsets.only(
                   top: 30,
@@ -930,7 +1044,7 @@ class StatistikFEPage extends StatelessWidget {
                   right: 24,
                 ),
                 width: 300,
-                height: 133,
+                height: 160,
                 decoration: BoxDecoration(
                   color: Color(0xffFFB5B5),
                   borderRadius: BorderRadius.circular(9),
@@ -1012,41 +1126,58 @@ class StatistikFEPage extends StatelessWidget {
                               Row(
                                 children: [
                                   SizedBox(
-                                    height: 40,
+                                    height: 70,
                                   ),
                                   Container(
                                     width: 60,
-                                    height: 20,
+                                    height: 34,
                                     decoration: BoxDecoration(
                                       borderRadius: BorderRadius.circular(3),
                                       color: Color(0xffBD0000),
                                     ),
-                                    child: Text(
-                                      'UNDUH',
-                                      style: whiteTextStyle.copyWith(
-                                        fontSize: 12,
-                                        fontWeight: regular,
+                                    child: Container(
+                                      margin: EdgeInsets.only(
+                                        top: 8,
                                       ),
-                                      textAlign: TextAlign.center,
+                                      child: Text(
+                                        'UNDUH',
+                                        style: whiteTextStyle.copyWith(
+                                          fontSize: 12,
+                                          fontWeight: regular,
+                                        ),
+                                        textAlign: TextAlign.center,
+                                      ),
                                     ),
                                   ),
                                   SizedBox(
                                     width: 6,
                                   ),
                                   Container(
-                                    width: 60,
-                                    height: 20,
+                                    width: 65,
+                                    height: 34,
                                     decoration: BoxDecoration(
                                       borderRadius: BorderRadius.circular(3),
                                       color: Color(0xff004171),
                                     ),
-                                    child: Text(
-                                      'DETAIL',
-                                      style: whiteTextStyle.copyWith(
-                                        fontSize: 12,
-                                        fontWeight: regular,
-                                      ),
-                                      textAlign: TextAlign.center,
+                                    child: Row(
+                                      children: [
+                                        TextButton(
+                                          onPressed: () {
+                                            Navigator.pushNamed(
+                                                context, '/BRS_detail');
+                                          },
+                                          child: Container(
+                                            child: Text(
+                                              'DETAIL',
+                                              style: whiteTextStyle.copyWith(
+                                                fontSize: 12,
+                                                fontWeight: regular,
+                                              ),
+                                              textAlign: TextAlign.center,
+                                            ),
+                                          ),
+                                        ),
+                                      ],
                                     ),
                                   ),
                                 ],
@@ -1070,6 +1201,8 @@ class StatistikFEPage extends StatelessWidget {
                   ],
                 ),
               ),
+
+              //Berita Resmi Statistik Card 2
               Container(
                 margin: EdgeInsets.only(
                   top: 30,
@@ -1077,7 +1210,7 @@ class StatistikFEPage extends StatelessWidget {
                   right: 24,
                 ),
                 width: 300,
-                height: 133,
+                height: 160,
                 decoration: BoxDecoration(
                   color: Color(0xffFFB5B5),
                   borderRadius: BorderRadius.circular(9),
@@ -1159,41 +1292,58 @@ class StatistikFEPage extends StatelessWidget {
                               Row(
                                 children: [
                                   SizedBox(
-                                    height: 40,
+                                    height: 70,
                                   ),
                                   Container(
                                     width: 60,
-                                    height: 20,
+                                    height: 34,
                                     decoration: BoxDecoration(
                                       borderRadius: BorderRadius.circular(3),
                                       color: Color(0xffBD0000),
                                     ),
-                                    child: Text(
-                                      'UNDUH',
-                                      style: whiteTextStyle.copyWith(
-                                        fontSize: 12,
-                                        fontWeight: regular,
+                                    child: Container(
+                                      margin: EdgeInsets.only(
+                                        top: 8,
                                       ),
-                                      textAlign: TextAlign.center,
+                                      child: Text(
+                                        'UNDUH',
+                                        style: whiteTextStyle.copyWith(
+                                          fontSize: 12,
+                                          fontWeight: regular,
+                                        ),
+                                        textAlign: TextAlign.center,
+                                      ),
                                     ),
                                   ),
                                   SizedBox(
                                     width: 6,
                                   ),
                                   Container(
-                                    width: 60,
-                                    height: 20,
+                                    width: 65,
+                                    height: 34,
                                     decoration: BoxDecoration(
                                       borderRadius: BorderRadius.circular(3),
                                       color: Color(0xff004171),
                                     ),
-                                    child: Text(
-                                      'DETAIL',
-                                      style: whiteTextStyle.copyWith(
-                                        fontSize: 12,
-                                        fontWeight: regular,
-                                      ),
-                                      textAlign: TextAlign.center,
+                                    child: Row(
+                                      children: [
+                                        TextButton(
+                                          onPressed: () {
+                                            Navigator.pushNamed(
+                                                context, '/BRS_detail');
+                                          },
+                                          child: Container(
+                                            child: Text(
+                                              'DETAIL',
+                                              style: whiteTextStyle.copyWith(
+                                                fontSize: 12,
+                                                fontWeight: regular,
+                                              ),
+                                              textAlign: TextAlign.center,
+                                            ),
+                                          ),
+                                        ),
+                                      ],
                                     ),
                                   ),
                                 ],

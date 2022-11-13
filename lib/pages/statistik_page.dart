@@ -24,7 +24,7 @@ class StatistikPage extends StatefulWidget {
 class _StatistikPageState extends State<StatistikPage> {
   @override
   int categoryIndex = 0;
-  int index = 2;
+  int index = 0;
   Widget build(BuildContext context) {
     return Scaffold(
       bottomNavigationBar: CurvedNavigationBar(
@@ -81,8 +81,11 @@ class _StatistikPageState extends State<StatistikPage> {
       case 3:
         widget = const IndikatorStrategis();
         break;
-      default:
+      case 4:
         widget = const InfografisPage();
+        break;
+      default:
+        widget = const StatistikFEPage();
         break;
     }
     return widget;

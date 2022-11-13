@@ -10,8 +10,6 @@ class Kategori extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        brightness: Brightness.dark,
-        backgroundColor: Colors.red,
         title: Row(
           mainAxisAlignment: MainAxisAlignment.start,
           children: [
