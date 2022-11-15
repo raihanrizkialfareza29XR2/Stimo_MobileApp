@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 import 'package:stimo/pages/BRS_detail.dart';
 import 'package:stimo/pages/berita_resmi_page.dart';
 import 'package:stimo/pages/grafik_page.dart';
@@ -9,6 +10,7 @@ import 'package:stimo/pages/publikasi_detail.dart';
 import 'package:stimo/pages/publikasi_page.dart';
 import 'package:stimo/pages/statistik_page.dart';
 import 'package:stimo/pages/tabel_page.dart';
+import 'package:stimo/providers/grafik_provider.dart';
 
 void main() => runApp(MyApp());
 
@@ -18,20 +20,27 @@ class MyApp extends StatelessWidget {
   // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-      debugShowCheckedModeBanner: false,
-      routes: {
-        '/': (context) => OnboardingPage(),
-        '/statistik': (context) => StatistikPage(),
-        '/tabel': (context) => TabelPage(),
-        '/grafik': (context) => GrafikPage(),
-        '/indikator': (context) => IndikatorStrategis(),
-        '/publikasi': (context) => PublikasiPage(),
-        '/beritaresmi': (context) => BeritaResmi(),
-        '/infografis': (context) => InfografisPage(),
-        '/detail_publikasi': (context) => PublikasiDetail(),
-        '/BRS_detail': (context) => BRSDetail(),
-      },
+    return MultiProvider(
+      providers: [
+        ChangeNotifierProvider(
+          create: (context) => GrafikProvider(),
+        )
+      ],
+      child: MaterialApp(
+        debugShowCheckedModeBanner: false,
+        routes: {
+          '/': (context) => OnboardingPage(),
+          '/statistik': (context) => StatistikPage(),
+          '/tabel': (context) => TabelPage(),
+          '/grafik': (context) => GrafikPage(),
+          '/indikator': (context) => IndikatorStrategis(),
+          '/publikasi': (context) => PublikasiPage(),
+          '/beritaresmi': (context) => BeritaResmi(),
+          '/infografis': (context) => InfografisPage(),
+          '/detail_publikasi': (context) => PublikasiDetail(),
+          '/BRS_detail': (context) => BRSDetail(),
+        },
+      ),
     );
   }
 }

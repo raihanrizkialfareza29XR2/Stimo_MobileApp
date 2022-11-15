@@ -2,6 +2,8 @@ import 'dart:async';
 
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
+import 'package:stimo/providers/grafik_provider.dart';
 import 'package:stimo/theme.dart';
 import 'package:stimo/widgets/onboarding_item.dart';
 
@@ -16,6 +18,16 @@ class _OnboardingPageState extends State<OnboardingPage> {
   int currentIndex = 0;
   CarouselController controller = CarouselController();
   @override
+  void initState() {
+    getInit();
+
+    super.initState();
+  }
+
+  getInit() async {
+    // await Provider.of<GrafikProvider>(context, listen: false).getGrafik();
+  }
+
   Widget build(BuildContext context) {
     return Scaffold(
       body: Column(

@@ -1,10 +1,58 @@
+import 'dart:convert';
+
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:http/http.dart' as http;
 import 'package:flutter/src/foundation/key.dart';
 import 'package:flutter/src/widgets/framework.dart';
+import 'package:provider/provider.dart';
+import 'package:stimo/Widget/grafik_card.dart';
+import 'package:stimo/models/grafik_models.dart';
+import 'package:stimo/providers/grafik_provider.dart';
+import 'package:stimo/services/grafik_services.dart';
 import 'package:stimo/theme.dart';
 
 class GrafikPage extends StatelessWidget {
-  const GrafikPage({Key? key}) : super(key: key);
+  String baseUrl = 'http://192.168.18.12:8000/api';
+
+  List<GrafikModel> parseGrafik(String response) {
+    var list = jsonDecode(response)['data'] as List<dynamic>;
+    List<GrafikModel> grafiks =
+        list.map((grafik) => GrafikModel.fromJson(grafik)).toList();
+    print(grafiks.length);
+    return grafiks;
+  }
+
+  Future<List<GrafikModel>> fetchGrafik() async {
+    var response =
+        await http.get(Uri.parse('http://192.168.18.12:8000/api/grafik-all'));
+    if (response.statusCode == 200) {
+      return compute(parseGrafik, response.body);
+    } else {
+      throw Exception('No data Found');
+    }
+  }
+  // var nodata = 'kaofainfoa';
+
+  // Future<GrafikModel> fetchGrafik() async {
+  //   var url = '$baseUrl/grafik-all';
+
+  //   var headers = {'Content-Type': 'application/json'};
+
+  //   final response = await http.get(
+  //     Uri.parse('http://192.168.18.12:8000/api/grafik-all'),
+  //     headers: headers,
+  //   );
+
+  //   var data = jsonDecode(response.body)['data'] as List<dynamic>;
+
+  //   if (response.statusCode == 200) {
+  //     return GrafikModel.fromJson(
+  //         data);
+  //   } else {
+  //     return jsonDecode(response.statusCode.toString());
+  //   }
+  // }
 
   @override
   Widget build(BuildContext context) {
@@ -86,48 +134,45 @@ class GrafikPage extends StatelessWidget {
                         margin: EdgeInsets.only(
                           top: 10,
                         ),
-                        child: SingleChildScrollView(
-                          scrollDirection: Axis.horizontal,
-                          child: Row(
-                            children: [
-                              Container(
-                                child: Row(
-                                  children: [
-                                    Container(
-                                      margin: EdgeInsets.only(
-                                        top: 146,
-                                        left: 28,
-                                        right: 28,
-                                      ),
-                                      child: ClipRRect(
-                                        borderRadius: BorderRadius.circular(40),
-                                        child: Image.asset(
-                                          'assets/images/TemplateBRSPertanian.png',
-                                          width: 338,
-                                          height: 550,
+                        child: FutureBuilder(
+                          future: fetchGrafik(),
+                          builder: (context, AsyncSnapshot snapshot) {
+                            print(snapshot);
+                            if (!snapshot.hasData) {
+                              return Text('Theres no data');
+                            } else {
+                              return Container(
+                                height: 550,
+                                child: ListView.builder(
+                                  shrinkWrap: true,
+                                  itemCount: snapshot.data.length,
+                                  scrollDirection: Axis.horizontal,
+                                  itemBuilder: ((context, index) {
+                                    return Row(
+                                      children: [
+                                        Container(
+                                          margin: EdgeInsets.only(
+                                            top: 146,
+                                            left: 28,
+                                            right: 28,
+                                          ),
+                                          child: ClipRRect(
+                                            borderRadius:
+                                                BorderRadius.circular(40),
+                                            child: Image.network(
+                                              'http://192.168.18.12:8000/storage/${snapshot.data[index].gambarGrafik}',
+                                              width: 338,
+                                              height: 550,
+                                            ),
+                                          ),
                                         ),
-                                      ),
-                                    ),
-                                    Container(
-                                      margin: EdgeInsets.only(
-                                        top: 146,
-                                        left: 28,
-                                        right: 28,
-                                      ),
-                                      child: ClipRRect(
-                                        borderRadius: BorderRadius.circular(40),
-                                        child: Image.asset(
-                                          'assets/images/TemplateBRSPertanian.png',
-                                          width: 338,
-                                          height: 550,
-                                        ),
-                                      ),
-                                    ),
-                                  ],
+                                      ],
+                                    );
+                                  }),
                                 ),
-                              ),
-                            ],
-                          ),
+                              );
+                            }
+                          },
                         ),
                       ),
                       Container(
