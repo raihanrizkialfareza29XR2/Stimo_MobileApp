@@ -8,6 +8,7 @@ import 'package:stimo/pages/infografis_page.dart';
 import 'package:stimo/pages/onboarding_page.dart';
 import 'package:stimo/pages/publikasi_detail.dart';
 import 'package:stimo/pages/publikasi_page.dart';
+import 'package:stimo/pages/splash_screen.dart';
 import 'package:stimo/pages/statistik_page.dart';
 import 'package:stimo/pages/tabel_page.dart';
 import 'package:stimo/providers/grafik_provider.dart';
@@ -29,7 +30,7 @@ class MyApp extends StatelessWidget {
       child: MaterialApp(
         debugShowCheckedModeBanner: false,
         routes: {
-          '/': (context) => OnboardingPage(),
+          '/': (context) => SplashScreen(),
           '/statistik': (context) => StatistikPage(),
           '/tabel': (context) => TabelPage(),
           '/grafik': (context) => GrafikPage(),
@@ -37,8 +38,12 @@ class MyApp extends StatelessWidget {
           '/publikasi': (context) => PublikasiPage(),
           '/beritaresmi': (context) => BeritaResmi(),
           '/infografis': (context) => InfografisPage(),
-          '/detail_publikasi': (context) => PublikasiDetail(),
-          '/BRS_detail': (context) => BRSDetail(),
+          '/detail_publikasi': (context) => PublikasiDetail(
+                index: 'j',
+              ),
+          '/BRS_detail': (context) => BRSDetail(
+                index: 1,
+              ),
         },
       ),
     );

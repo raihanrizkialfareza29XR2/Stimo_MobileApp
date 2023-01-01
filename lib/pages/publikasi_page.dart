@@ -1,14 +1,40 @@
+import 'dart:convert';
+
 import 'package:curved_navigation_bar/curved_navigation_bar.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:stimo/Widget/news_card.dart';
+import 'package:stimo/models/publikasi_models.dart';
+import 'package:stimo/pages/publikasi_detail.dart';
 import 'package:stimo/theme.dart';
+import 'package:http/http.dart' as http;
 
 class PublikasiPage extends StatelessWidget {
   const PublikasiPage({Key? key}) : super(key: key);
 
   @override
+  List<PublikasiModel> parsePublikasi(String response) {
+    var list = jsonDecode(response)['data'][1] as List<dynamic>;
+    List<PublikasiModel> publikasi =
+        list.map((publik) => PublikasiModel.fromJson(publik)).toList();
+    print(publikasi.length);
+    return publikasi;
+  }
+
+  Future<List<PublikasiModel>> fetchPublikasi() async {
+    var response = await http.get(Uri.parse(
+        'https://webapi.bps.go.id/v1/api/list/model/publication/lang/ind/domain/3516/key/3f07c05929293e0074b543e390b82178/'));
+    if (response.statusCode == 200) {
+      var data = jsonDecode(response.body)['data'][1];
+      print(data);
+      return compute(parsePublikasi, response.body);
+    } else {
+      throw Exception('No data Found');
+    }
+  }
+
   Widget build(BuildContext context) {
     return Scaffold(
       body: SafeArea(
@@ -247,91 +273,71 @@ class PublikasiPage extends StatelessWidget {
                       //Card News Curah Hujan
                       Container(
                         margin: EdgeInsets.only(
-                          top: 430,
+                          top: 410,
                         ),
-                        child: SingleChildScrollView(
-                          scrollDirection: Axis.horizontal,
-                          child: Row(
-                            children: [
-                              Column(
-                                children: [
-                                  Container(
-                                    margin: EdgeInsets.only(
-                                      left: 22,
-                                      right: 24,
-                                    ),
-                                    width: 206,
-                                    height: 124,
-                                    decoration: BoxDecoration(
-                                      color: Color(0xffD4E5FF),
-                                      borderRadius: BorderRadius.circular(9),
-                                    ),
-                                    child: Image.asset(
-                                      'assets/images/Covid.png',
-                                    ),
-                                  ),
-                                  Container(
-                                    margin: EdgeInsets.only(
-                                      top: 20,
-                                      left: 22,
-                                      right: 24,
-                                    ),
-                                    width: 206,
-                                    height: 60,
-                                    decoration: BoxDecoration(
-                                      borderRadius: BorderRadius.circular(9),
-                                    ),
-                                    child: Text(
-                                      'Curah Hujan per Bulan Menurut Stasiun Pengamatan, 2019',
-                                      style: GoogleFonts.nunitoSans(
-                                        fontWeight: bold,
-                                        color: Color(0xff333333),
-                                        fontSize: 13,
-                                      ),
-                                    ),
-                                  ),
-                                ],
-                              ),
-                              Column(
-                                children: [
-                                  Container(
-                                    margin: EdgeInsets.only(
-                                      right: 24,
-                                    ),
-                                    width: 206,
-                                    height: 124,
-                                    decoration: BoxDecoration(
-                                      color: Color(0xffD4E5FF),
-                                      borderRadius: BorderRadius.circular(9),
-                                    ),
-                                    child: Image.asset(
-                                      'assets/images/Jokowi.png',
-                                      width: 206,
-                                    ),
-                                  ),
-                                  Container(
-                                    margin: EdgeInsets.only(
-                                      top: 20,
-                                      right: 24,
-                                    ),
-                                    width: 206,
-                                    height: 60,
-                                    decoration: BoxDecoration(
-                                      borderRadius: BorderRadius.circular(9),
-                                    ),
-                                    child: Text(
-                                      'Jokowi Beri Kabar Baik Soal Covid-19 RI, Apa itu?',
-                                      style: GoogleFonts.nunitoSans(
-                                        fontWeight: bold,
-                                        color: Color(0xff333333),
-                                        fontSize: 13,
-                                      ),
-                                    ),
-                                  ),
-                                ],
-                              ),
-                            ],
-                          ),
+                        child: FutureBuilder(
+                          future: fetchPublikasi(),
+                          builder: (context, AsyncSnapshot snapshot) {
+                            if (!snapshot.hasData) {
+                              return Text('Theres no data');
+                            } else {
+                              return Container(
+                                height: 238,
+                                child: ListView.builder(
+                                  itemCount: snapshot.data.length,
+                                  shrinkWrap: true,
+                                  scrollDirection: Axis.horizontal,
+                                  itemBuilder: ((context, index) {
+                                    return Row(
+                                      children: [
+                                        Column(
+                                          children: [
+                                            Container(
+                                              margin: EdgeInsets.only(
+                                                left: 22,
+                                                right: 24,
+                                              ),
+                                              width: 110,
+                                              height: 155,
+                                              decoration: BoxDecoration(
+                                                color: Color(0xffD4E5FF),
+                                                borderRadius:
+                                                    BorderRadius.circular(9),
+                                              ),
+                                              child: Image.network(
+                                                '${snapshot.data[index].cover}',
+                                              ),
+                                            ),
+                                            Container(
+                                              margin: EdgeInsets.only(
+                                                top: 20,
+                                                left: 12,
+                                              ),
+                                              width: 206,
+                                              height: 60,
+                                              decoration: BoxDecoration(
+                                                borderRadius:
+                                                    BorderRadius.circular(9),
+                                              ),
+                                              child: Text(
+                                                '${snapshot.data[index].title}',
+                                                textAlign: TextAlign.center,
+                                                style: GoogleFonts.nunitoSans(
+                                                  fontWeight: bold,
+                                                  color: Color(0xff333333),
+                                                  fontSize: 13,
+                                                ),
+                                              ),
+                                            ),
+                                          ],
+                                        )
+                                      ],
+                                    );
+                                  }),
+                                ),
+                              );
+                            }
+                          },
                         ),
                       ),
                       Container(
@@ -340,753 +346,243 @@ class PublikasiPage extends StatelessWidget {
                         ),
                         child: Stack(
                           children: [
+                            // Container publikasi bawah
                             Container(
-                              margin: EdgeInsets.only(
-                                top: 451,
-                                left: 23,
-                              ),
-                              child: Text(
-                                'Seputar Sosial & Kependudukan',
-                                style: GoogleFonts.nunitoSans(
-                                  fontWeight: extraBold,
-                                  color: Color(0xff333333),
-                                  fontSize: 16,
-                                ),
-                              ),
-                            ),
-                            Container(
-                              margin: EdgeInsets.only(
-                                top: 476,
-                                left: 23,
-                              ),
-                              child: Text(
-                                'Dapatkan informasi terkini',
-                                style: GoogleFonts.nunitoSans(
-                                  fontWeight: semiBold,
-                                  color: Color(0xff828282),
-                                  fontSize: 14,
-                                ),
-                              ),
-                            ),
-                            Container(
-                              margin: EdgeInsets.only(
-                                top: 451,
-                                left: 290,
-                                right: 24,
-                              ),
-                              width: 80,
-                              height: 30,
-                              decoration: BoxDecoration(
-                                color: Color(0xffD4E5FF),
-                                borderRadius: BorderRadius.circular(9),
-                              ),
-                              child: Padding(
-                                padding: const EdgeInsets.only(
-                                    top: 7, bottom: 7, left: 7, right: 7),
-                                child: Text(
-                                  'Lihat Semua',
-                                  style: GoogleFonts.nunitoSans(
-                                    fontWeight: bold,
-                                    color: Color(0xff005079),
-                                    fontSize: 11,
-                                  ),
-                                ),
-                              ),
-                            ),
-                            Container(
-                              margin: EdgeInsets.only(
-                                top: 520,
-                              ),
-                              child: SingleChildScrollView(
-                                scrollDirection: Axis.horizontal,
-                                child: Row(
-                                  children: [
-                                    Column(
-                                      children: [
-                                        Container(
-                                          margin: EdgeInsets.only(
-                                            left: 22,
-                                            right: 24,
-                                          ),
-                                          width: 206,
-                                          height: 124,
-                                          decoration: BoxDecoration(
-                                            color: Color(0xffD4E5FF),
-                                            borderRadius:
-                                                BorderRadius.circular(9),
-                                          ),
-                                          child: Image.asset(
-                                            'assets/images/Covid.png',
-                                          ),
-                                        ),
-                                        Container(
-                                          margin: EdgeInsets.only(
-                                            top: 20,
-                                            left: 22,
-                                            right: 24,
-                                          ),
-                                          width: 206,
-                                          height: 60,
-                                          decoration: BoxDecoration(
-                                            borderRadius:
-                                                BorderRadius.circular(9),
-                                          ),
-                                          child: Text(
-                                            'Curah Hujan per Bulan Menurut Stasiun Pengamatan, 2019',
-                                            style: GoogleFonts.nunitoSans(
-                                              fontWeight: bold,
-                                              color: Color(0xff333333),
-                                              fontSize: 13,
-                                            ),
-                                          ),
-                                        ),
-                                      ],
-                                    ),
-                                    Column(
-                                      children: [
-                                        Container(
-                                          margin: EdgeInsets.only(
-                                            right: 24,
-                                          ),
-                                          width: 206,
-                                          height: 124,
-                                          decoration: BoxDecoration(
-                                            color: Color(0xffD4E5FF),
-                                            borderRadius:
-                                                BorderRadius.circular(9),
-                                          ),
-                                          child: Image.asset(
-                                            'assets/images/Jokowi.png',
-                                            width: 206,
-                                          ),
-                                        ),
-                                        Container(
-                                          margin: EdgeInsets.only(
-                                            top: 20,
-                                            right: 24,
-                                          ),
-                                          width: 206,
-                                          height: 60,
-                                          decoration: BoxDecoration(
-                                            borderRadius:
-                                                BorderRadius.circular(9),
-                                          ),
-                                          child: Text(
-                                            'Jokowi Beri Kabar Baik Soal Covid-19 RI, Apa itu?',
-                                            style: GoogleFonts.nunitoSans(
-                                              fontWeight: bold,
-                                              color: Color(0xff333333),
-                                              fontSize: 13,
-                                            ),
-                                          ),
-                                        ),
-                                      ],
-                                    ),
-                                  ],
-                                ),
-                              ),
-                            ),
-                            Container(
-                              margin: EdgeInsets.only(
-                                top: 730,
-                              ),
-                              child: SingleChildScrollView(
-                                scrollDirection: Axis.horizontal,
-                                child: Row(
-                                  children: [
-                                    Container(
+                              child: FutureBuilder(
+                                future: fetchPublikasi(),
+                                builder: (context, AsyncSnapshot snapshot) {
+                                  if (!snapshot.hasData) {
+                                    return Text('Theres no data');
+                                  } else {
+                                    return Container(
+                                      height: 560,
                                       margin: EdgeInsets.only(
-                                        left: 20,
-                                        right: 20,
+                                        top: 435,
+                                        left: 24,
                                       ),
-                                      width: 155,
-                                      height: 69,
-                                      decoration: BoxDecoration(
-                                        gradient: LinearGradient(
-                                          begin: Alignment.topRight,
-                                          end: Alignment.bottomLeft,
-                                          colors: [
-                                            Color(0xffFF3939),
-                                            Color(0x73FF3939),
-                                          ],
-                                        ),
-                                        borderRadius: BorderRadius.circular(8),
-                                      ),
-                                      child: Row(
-                                        children: [
-                                          Container(
-                                            margin: EdgeInsets.only(
-                                              left: 18,
-                                            ),
-                                            child: Text(
-                                              'Gender',
-                                              style: whiteTextStyle.copyWith(
-                                                fontSize: 14,
-                                                fontWeight: semiBold,
-                                              ),
-                                            ),
-                                          ),
-                                          SizedBox(
-                                            width: 25,
-                                          ),
-                                          Image.asset(
-                                            'assets/images/maleandfemale.png',
-                                          ),
-                                        ],
-                                      ),
-                                    ),
-                                    Container(
-                                      margin: EdgeInsets.only(
-                                        left: 20,
-                                        right: 20,
-                                      ),
-                                      width: 155,
-                                      height: 69,
-                                      decoration: BoxDecoration(
-                                        gradient: LinearGradient(
-                                          begin: Alignment.topRight,
-                                          end: Alignment.bottomLeft,
-                                          colors: [
-                                            Color(0xff397CFF),
-                                            Color(0x73397CFF),
-                                          ],
-                                        ),
-                                        borderRadius: BorderRadius.circular(8),
-                                      ),
-                                      child: Row(
-                                        children: [
-                                          Container(
-                                            margin: EdgeInsets.only(
-                                              left: 18,
-                                            ),
-                                            child: Text(
-                                              'Geografi',
-                                              style: whiteTextStyle.copyWith(
-                                                fontSize: 14,
-                                                fontWeight: semiBold,
-                                              ),
-                                            ),
-                                          ),
-                                          SizedBox(
-                                            width: 20,
-                                          ),
-                                          Image.asset(
-                                            'assets/images/globe.png',
-                                            width: 48,
-                                          ),
-                                        ],
-                                      ),
-                                    ),
-                                    Container(
-                                      margin: EdgeInsets.only(
-                                        left: 20,
-                                        right: 20,
-                                      ),
-                                      width: 155,
-                                      height: 69,
-                                      decoration: BoxDecoration(
-                                        gradient: LinearGradient(
-                                          begin: Alignment.topRight,
-                                          end: Alignment.bottomLeft,
-                                          colors: [
-                                            Color(0xffFF3939),
-                                            Color(0x73FF3939),
-                                          ],
-                                        ),
-                                        borderRadius: BorderRadius.circular(8),
-                                      ),
-                                      child: Row(
-                                        children: [
-                                          Container(
-                                            margin: EdgeInsets.only(
-                                              left: 18,
-                                            ),
-                                            child: Text(
-                                              'Energi',
-                                              style: whiteTextStyle.copyWith(
-                                                fontSize: 14,
-                                                fontWeight: semiBold,
-                                              ),
-                                            ),
-                                          ),
-                                          SizedBox(
-                                            width: 20,
-                                          ),
-                                          Image.asset(
-                                            'assets/images/conflict.png',
-                                          ),
-                                        ],
-                                      ),
-                                    ),
-                                    Container(
-                                      margin: EdgeInsets.only(
-                                        left: 20,
-                                        right: 20,
-                                      ),
-                                      width: 155,
-                                      height: 69,
-                                      decoration: BoxDecoration(
-                                        gradient: LinearGradient(
-                                          begin: Alignment.topRight,
-                                          end: Alignment.bottomLeft,
-                                          colors: [
-                                            Color(0xffFF3939),
-                                            Color(0x73FF3939),
-                                          ],
-                                        ),
-                                        borderRadius: BorderRadius.circular(8),
-                                      ),
-                                      child: Row(
-                                        children: [
-                                          Container(
-                                            margin: EdgeInsets.only(
-                                              left: 18,
-                                            ),
-                                            child: Text(
-                                              'Perikanan',
-                                              style: whiteTextStyle.copyWith(
-                                                fontSize: 14,
-                                                fontWeight: semiBold,
-                                              ),
-                                            ),
-                                          ),
-                                          SizedBox(
-                                            width: 20,
-                                          ),
-                                          Image.asset(
-                                            'assets/images/perch.png',
-                                          ),
-                                        ],
-                                      ),
-                                    ),
-                                  ],
-                                ),
-                              ),
-                            ),
-                            Container(
-                              margin: EdgeInsets.only(
-                                top: 855,
-                                left: 24,
-                              ),
-                              width: 345,
-                              height: 205,
-                              child: Row(
-                                mainAxisSize: MainAxisSize.min,
-                                mainAxisAlignment: MainAxisAlignment.center,
-                                crossAxisAlignment: CrossAxisAlignment.center,
-                                children: [
-                                  Container(
-                                    width: 345,
-                                    height: 205,
-                                    decoration: BoxDecoration(
-                                      borderRadius: BorderRadius.circular(22),
-                                      boxShadow: [
-                                        BoxShadow(
-                                          color: Color(0x3f000000),
-                                          blurRadius: 4,
-                                          offset: Offset(0, 2),
-                                        ),
-                                      ],
-                                      color: Colors.white,
-                                    ),
-                                    child: Stack(
-                                      children: [
-                                        Positioned.fill(
-                                          child: Align(
-                                            alignment: Alignment.topLeft,
-                                            child: Container(
-                                              width: 345,
-                                              height: 123,
-                                              decoration: BoxDecoration(
-                                                borderRadius: BorderRadius.only(
-                                                  topLeft: Radius.circular(22),
-                                                  topRight: Radius.circular(22),
-                                                  bottomLeft:
-                                                      Radius.circular(0),
-                                                  bottomRight:
-                                                      Radius.circular(0),
+                                      child: ListView.builder(
+                                        itemCount: snapshot.data.length,
+                                        shrinkWrap: true,
+                                        itemBuilder: ((context, index) {
+                                          return Row(
+                                            children: [
+                                              Container(
+                                                margin: EdgeInsets.only(
+                                                  top: 50,
                                                 ),
-                                                color: Color(0xffff5252),
-                                              ),
-                                            ),
-                                          ),
-                                        ),
-                                        Positioned(
-                                          left: 260,
-                                          top: 39,
-                                          child: Container(
-                                            width: 66,
-                                            height: 66,
-                                            child: Image.asset(
-                                              'assets/images/smartphone.png',
-                                            ),
-                                          ),
-                                        ),
-                                        Positioned(
-                                          left: 26,
-                                          top: 20,
-                                          child: Text(
-                                            "Pertumbuhan Ekonomi\nKabupaten Mojokerto\nTahun 2021",
-                                            style: TextStyle(
-                                              color: Colors.white,
-                                              fontSize: 22,
-                                              fontFamily: "Nunito Sans",
-                                              fontWeight: FontWeight.w700,
-                                            ),
-                                          ),
-                                        ),
-                                        Positioned(
-                                          left: 13,
-                                          top: 137,
-                                          child: Container(
-                                            width: 48,
-                                            height: 48,
-                                            decoration: BoxDecoration(
-                                              borderRadius:
-                                                  BorderRadius.circular(8),
-                                            ),
-                                            child: Image.asset(
-                                              'assets/images/arrowDown.png',
-                                            ),
-                                          ),
-                                        ),
-                                        Positioned(
-                                          left: 65,
-                                          top: 153,
-                                          child: Text(
-                                            "Lihat detail publikasi",
-                                            style: TextStyle(
-                                              color: Colors.black,
-                                              fontSize: 12,
-                                            ),
-                                          ),
-                                        ),
-                                        Positioned(
-                                          left: 216,
-                                          top: 146,
-                                          child: Container(
-                                            width: 111,
-                                            height: 31,
-                                            child: Stack(
-                                              children: [
-                                                Positioned.fill(
-                                                  child: Align(
-                                                    child: Text(
-                                                      "Unduh Sekarang",
-                                                      style: TextStyle(
-                                                        color:
-                                                            Color(0xff00192c),
-                                                        fontSize: 12,
-                                                        fontFamily:
-                                                            "Nunito Sans",
-                                                        fontWeight:
-                                                            FontWeight.w700,
+                                                child: Container(
+                                                  width: 345,
+                                                  height: 205,
+                                                  child: Row(
+                                                    mainAxisSize:
+                                                        MainAxisSize.min,
+                                                    mainAxisAlignment:
+                                                        MainAxisAlignment
+                                                            .center,
+                                                    crossAxisAlignment:
+                                                        CrossAxisAlignment
+                                                            .center,
+                                                    children: [
+                                                      Container(
+                                                        width: 345,
+                                                        height: 205,
+                                                        decoration:
+                                                            BoxDecoration(
+                                                          borderRadius:
+                                                              BorderRadius
+                                                                  .circular(22),
+                                                          boxShadow: [
+                                                            BoxShadow(
+                                                              color: Color(
+                                                                  0x3f000000),
+                                                              blurRadius: 4,
+                                                              offset:
+                                                                  Offset(0, 2),
+                                                            ),
+                                                          ],
+                                                          color: Colors.white,
+                                                        ),
+                                                        child: Stack(
+                                                          children: [
+                                                            Positioned.fill(
+                                                              child: Align(
+                                                                alignment:
+                                                                    Alignment
+                                                                        .topLeft,
+                                                                child:
+                                                                    Container(
+                                                                  width: 345,
+                                                                  height: 123,
+                                                                  decoration:
+                                                                      BoxDecoration(
+                                                                    borderRadius:
+                                                                        BorderRadius
+                                                                            .only(
+                                                                      topLeft: Radius
+                                                                          .circular(
+                                                                              22),
+                                                                      topRight:
+                                                                          Radius.circular(
+                                                                              22),
+                                                                      bottomLeft:
+                                                                          Radius.circular(
+                                                                              0),
+                                                                      bottomRight:
+                                                                          Radius.circular(
+                                                                              0),
+                                                                    ),
+                                                                    color: Color(
+                                                                        0xffff5252),
+                                                                  ),
+                                                                ),
+                                                              ),
+                                                            ),
+                                                            Positioned(
+                                                              left: 260,
+                                                              top: 29,
+                                                              child: Container(
+                                                                width: 66,
+                                                                height: 66,
+                                                                child: Image
+                                                                    .network(
+                                                                  '${snapshot.data[index].cover}',
+                                                                ),
+                                                              ),
+                                                            ),
+                                                            Container(
+                                                              margin: EdgeInsets
+                                                                  .only(
+                                                                left: 10,
+                                                                top: 20,
+                                                              ),
+                                                              height: 80,
+                                                              width: 250,
+                                                              child: Row(
+                                                                children: [
+                                                                  Expanded(
+                                                                    child: Text(
+                                                                      snapshot
+                                                                          .data[
+                                                                              index]
+                                                                          .title,
+                                                                      style:
+                                                                          TextStyle(
+                                                                        color: Colors
+                                                                            .white,
+                                                                        fontSize:
+                                                                            20,
+                                                                        fontFamily:
+                                                                            "Nunito Sans",
+                                                                        fontWeight:
+                                                                            FontWeight.w700,
+                                                                      ),
+                                                                    ),
+                                                                  ),
+                                                                ],
+                                                              ),
+                                                            ),
+                                                            Positioned(
+                                                              left: 13,
+                                                              top: 137,
+                                                              child: Container(
+                                                                width: 48,
+                                                                height: 48,
+                                                                decoration:
+                                                                    BoxDecoration(
+                                                                  borderRadius:
+                                                                      BorderRadius
+                                                                          .circular(
+                                                                              8),
+                                                                ),
+                                                                child:
+                                                                    Image.asset(
+                                                                  'assets/images/arrowDown.png',
+                                                                ),
+                                                              ),
+                                                            ),
+                                                            Positioned(
+                                                              left: 65,
+                                                              top: 138,
+                                                              child: TextButton(
+                                                                onPressed: () {
+                                                                  Navigator.push(
+                                                                      context,
+                                                                      MaterialPageRoute(
+                                                                          builder: (context) =>
+                                                                              PublikasiDetail(index: snapshot.data[index].pubId)));
+                                                                },
+                                                                child: Text(
+                                                                  "Lihat detail publikasi",
+                                                                  style:
+                                                                      TextStyle(
+                                                                    color: Colors
+                                                                        .black,
+                                                                    fontSize:
+                                                                        12,
+                                                                  ),
+                                                                ),
+                                                              ),
+                                                            ),
+                                                            Positioned(
+                                                              left: 216,
+                                                              top: 146,
+                                                              child: Container(
+                                                                width: 111,
+                                                                height: 31,
+                                                                child: Stack(
+                                                                  children: [
+                                                                    Positioned
+                                                                        .fill(
+                                                                      child:
+                                                                          Align(
+                                                                        child:
+                                                                            Text(
+                                                                          "Unduh Sekarang",
+                                                                          style:
+                                                                              TextStyle(
+                                                                            color:
+                                                                                Color(0xff00192c),
+                                                                            fontSize:
+                                                                                12,
+                                                                            fontFamily:
+                                                                                "Nunito Sans",
+                                                                            fontWeight:
+                                                                                FontWeight.w700,
+                                                                          ),
+                                                                        ),
+                                                                      ),
+                                                                    ),
+                                                                    Container(
+                                                                      width:
+                                                                          111,
+                                                                      height:
+                                                                          31,
+                                                                      decoration:
+                                                                          BoxDecoration(
+                                                                        borderRadius:
+                                                                            BorderRadius.circular(13),
+                                                                        color: Color(
+                                                                            0x6671c3ff),
+                                                                      ),
+                                                                    ),
+                                                                  ],
+                                                                ),
+                                                              ),
+                                                            ),
+                                                          ],
+                                                        ),
                                                       ),
-                                                    ),
+                                                    ],
                                                   ),
                                                 ),
-                                                Container(
-                                                  width: 111,
-                                                  height: 31,
-                                                  decoration: BoxDecoration(
-                                                    borderRadius:
-                                                        BorderRadius.circular(
-                                                            13),
-                                                    color: Color(0x6671c3ff),
-                                                  ),
-                                                ),
-                                              ],
-                                            ),
-                                          ),
-                                        ),
-                                      ],
-                                    ),
-                                  ),
-                                ],
-                              ),
-                            ),
-                            Container(
-                              margin: EdgeInsets.only(
-                                top: 1100,
-                                left: 24,
-                              ),
-                              width: 345,
-                              height: 205,
-                              child: Row(
-                                mainAxisSize: MainAxisSize.min,
-                                mainAxisAlignment: MainAxisAlignment.center,
-                                crossAxisAlignment: CrossAxisAlignment.center,
-                                children: [
-                                  Container(
-                                    width: 345,
-                                    height: 205,
-                                    decoration: BoxDecoration(
-                                      borderRadius: BorderRadius.circular(22),
-                                      boxShadow: [
-                                        BoxShadow(
-                                          color: Color(0x3f000000),
-                                          blurRadius: 4,
-                                          offset: Offset(0, 2),
-                                        ),
-                                      ],
-                                      color: Colors.white,
-                                    ),
-                                    child: Stack(
-                                      children: [
-                                        Positioned.fill(
-                                          child: Align(
-                                            alignment: Alignment.topLeft,
-                                            child: Container(
-                                              width: 345,
-                                              height: 123,
-                                              decoration: BoxDecoration(
-                                                borderRadius: BorderRadius.only(
-                                                  topLeft: Radius.circular(22),
-                                                  topRight: Radius.circular(22),
-                                                  bottomLeft:
-                                                      Radius.circular(0),
-                                                  bottomRight:
-                                                      Radius.circular(0),
-                                                ),
-                                                color: Color(0xffff5252),
                                               ),
-                                            ),
-                                          ),
-                                        ),
-                                        Positioned(
-                                          left: 260,
-                                          top: 39,
-                                          child: Container(
-                                            width: 66,
-                                            height: 66,
-                                            child: Image.asset(
-                                              'assets/images/smartphone.png',
-                                            ),
-                                          ),
-                                        ),
-                                        Positioned(
-                                          left: 26,
-                                          top: 20,
-                                          child: Text(
-                                            "Pertumbuhan Ekonomi\nKabupaten Mojokerto\nTahun 2021",
-                                            style: TextStyle(
-                                              color: Colors.white,
-                                              fontSize: 22,
-                                              fontFamily: "Nunito Sans",
-                                              fontWeight: FontWeight.w700,
-                                            ),
-                                          ),
-                                        ),
-                                        Positioned(
-                                          left: 13,
-                                          top: 137,
-                                          child: Container(
-                                            width: 48,
-                                            height: 48,
-                                            decoration: BoxDecoration(
-                                              borderRadius:
-                                                  BorderRadius.circular(8),
-                                            ),
-                                            child: Image.asset(
-                                              'assets/images/arrowDown.png',
-                                            ),
-                                          ),
-                                        ),
-                                        Positioned(
-                                          left: 65,
-                                          top: 153,
-                                          child: Text(
-                                            "Lihat detail publikasi",
-                                            style: TextStyle(
-                                              color: Colors.black,
-                                              fontSize: 12,
-                                            ),
-                                          ),
-                                        ),
-                                        Positioned(
-                                          left: 216,
-                                          top: 146,
-                                          child: Container(
-                                            width: 111,
-                                            height: 31,
-                                            child: Stack(
-                                              children: [
-                                                Positioned.fill(
-                                                  child: Align(
-                                                    child: Text(
-                                                      "Unduh Sekarang",
-                                                      style: TextStyle(
-                                                        color:
-                                                            Color(0xff00192c),
-                                                        fontSize: 12,
-                                                        fontFamily:
-                                                            "Nunito Sans",
-                                                        fontWeight:
-                                                            FontWeight.w700,
-                                                      ),
-                                                    ),
-                                                  ),
-                                                ),
-                                                Container(
-                                                  width: 111,
-                                                  height: 31,
-                                                  decoration: BoxDecoration(
-                                                    borderRadius:
-                                                        BorderRadius.circular(
-                                                            13),
-                                                    color: Color(0x6671c3ff),
-                                                  ),
-                                                ),
-                                              ],
-                                            ),
-                                          ),
-                                        ),
-                                      ],
-                                    ),
-                                  ),
-                                ],
-                              ),
-                            ),
-                            Container(
-                              margin: EdgeInsets.only(
-                                top: 1350,
-                                left: 24,
-                              ),
-                              width: 345,
-                              height: 205,
-                              child: Row(
-                                mainAxisSize: MainAxisSize.min,
-                                mainAxisAlignment: MainAxisAlignment.center,
-                                crossAxisAlignment: CrossAxisAlignment.center,
-                                children: [
-                                  Container(
-                                    width: 345,
-                                    height: 205,
-                                    decoration: BoxDecoration(
-                                      borderRadius: BorderRadius.circular(22),
-                                      boxShadow: [
-                                        BoxShadow(
-                                          color: Color(0x3f000000),
-                                          blurRadius: 4,
-                                          offset: Offset(0, 2),
-                                        ),
-                                      ],
-                                      color: Colors.white,
-                                    ),
-                                    child: Stack(
-                                      children: [
-                                        Positioned.fill(
-                                          child: Align(
-                                            alignment: Alignment.topLeft,
-                                            child: Container(
-                                              width: 345,
-                                              height: 123,
-                                              decoration: BoxDecoration(
-                                                borderRadius: BorderRadius.only(
-                                                  topLeft: Radius.circular(22),
-                                                  topRight: Radius.circular(22),
-                                                  bottomLeft:
-                                                      Radius.circular(0),
-                                                  bottomRight:
-                                                      Radius.circular(0),
-                                                ),
-                                                color: Color(0xffff5252),
-                                              ),
-                                            ),
-                                          ),
-                                        ),
-                                        Positioned(
-                                          left: 260,
-                                          top: 39,
-                                          child: Container(
-                                            width: 66,
-                                            height: 66,
-                                            child: Image.asset(
-                                              'assets/images/smartphone.png',
-                                            ),
-                                          ),
-                                        ),
-                                        Positioned(
-                                          left: 26,
-                                          top: 20,
-                                          child: Text(
-                                            "Pertumbuhan Ekonomi\nKabupaten Mojokerto\nTahun 2021",
-                                            style: TextStyle(
-                                              color: Colors.white,
-                                              fontSize: 22,
-                                              fontFamily: "Nunito Sans",
-                                              fontWeight: FontWeight.w700,
-                                            ),
-                                          ),
-                                        ),
-                                        Positioned(
-                                          left: 13,
-                                          top: 137,
-                                          child: Container(
-                                            width: 48,
-                                            height: 48,
-                                            decoration: BoxDecoration(
-                                              borderRadius:
-                                                  BorderRadius.circular(8),
-                                            ),
-                                            child: Image.asset(
-                                              'assets/images/arrowDown.png',
-                                            ),
-                                          ),
-                                        ),
-                                        Positioned(
-                                          left: 65,
-                                          top: 153,
-                                          child: Text(
-                                            "Lihat detail publikasi",
-                                            style: TextStyle(
-                                              color: Colors.black,
-                                              fontSize: 12,
-                                            ),
-                                          ),
-                                        ),
-                                        Positioned(
-                                          left: 216,
-                                          top: 146,
-                                          child: Container(
-                                            width: 111,
-                                            height: 31,
-                                            child: Stack(
-                                              children: [
-                                                Positioned.fill(
-                                                  child: Align(
-                                                    child: Text(
-                                                      "Unduh Sekarang",
-                                                      style: TextStyle(
-                                                        color:
-                                                            Color(0xff00192c),
-                                                        fontSize: 12,
-                                                        fontFamily:
-                                                            "Nunito Sans",
-                                                        fontWeight:
-                                                            FontWeight.w700,
-                                                      ),
-                                                    ),
-                                                  ),
-                                                ),
-                                                Container(
-                                                  width: 111,
-                                                  height: 31,
-                                                  decoration: BoxDecoration(
-                                                    borderRadius:
-                                                        BorderRadius.circular(
-                                                            13),
-                                                    color: Color(0x6671c3ff),
-                                                  ),
-                                                ),
-                                              ],
-                                            ),
-                                          ),
-                                        ),
-                                      ],
-                                    ),
-                                  ),
-                                ],
+                                            ],
+                                          );
+                                        }),
+                                      ),
+                                    );
+                                  }
+                                },
                               ),
                             ),
                           ],

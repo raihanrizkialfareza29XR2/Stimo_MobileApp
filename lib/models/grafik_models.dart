@@ -1,36 +1,25 @@
 class GrafikModel {
-  int? id;
-  String? kategori;
-  String? fileGrafik;
-  String? gambarGrafik;
-  String? createdAt;
-  String? updatedAt;
+  int? turthId;
+  String? turth;
+  int? groupTurthId;
+  String? nameGroupTurth;
 
   GrafikModel(
-      {this.id,
-      this.kategori,
-      this.fileGrafik,
-      this.gambarGrafik,
-      this.createdAt,
-      this.updatedAt});
+      {this.turthId, this.turth, this.groupTurthId, this.nameGroupTurth});
 
   GrafikModel.fromJson(Map<String, dynamic> json) {
-    id = json['id'];
-    kategori = json['kategori'];
-    fileGrafik = json['file_grafik'];
-    gambarGrafik = json['gambar_grafik'];
-    createdAt = json['created_at'];
-    updatedAt = json['updated_at'];
+    turthId = json['turth_id'];
+    turth = json['turth'];
+    groupTurthId = json['group_turth_id'];
+    nameGroupTurth = json['name_group_turth'];
   }
 
   Map<String, dynamic> toJson() {
     final Map<String, dynamic> data = new Map<String, dynamic>();
-    data['id'] = this.id;
-    data['kategori'] = this.kategori;
-    data['file_grafik'] = this.fileGrafik;
-    data['gambar_grafik'] = this.gambarGrafik;
-    data['created_at'] = this.createdAt;
-    data['updated_at'] = this.updatedAt;
+    data['turth_id'] = this.turthId;
+    data['turth'] = this.turth;
+    data['group_turth_id'] = this.groupTurthId;
+    data['name_group_turth'] = this.nameGroupTurth;
     return data;
   }
 }

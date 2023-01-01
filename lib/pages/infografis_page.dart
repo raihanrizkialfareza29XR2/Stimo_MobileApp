@@ -1,13 +1,38 @@
+import 'dart:convert';
+
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/src/foundation/key.dart';
 import 'package:flutter/src/widgets/framework.dart';
+import 'package:stimo/models/infografis_models.dart';
 import 'package:stimo/theme.dart';
+import 'package:http/http.dart' as http;
 
 class InfografisPage extends StatelessWidget {
   const InfografisPage({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
+    List<InfografisModel> parseInfografis(String response) {
+      var list = jsonDecode(response)['data'][1] as List<dynamic>;
+      List<InfografisModel> infografis =
+          list.map((infografi) => InfografisModel.fromJson(infografi)).toList();
+      print(infografis.length);
+      return infografis;
+    }
+
+    Future<List<InfografisModel>> fetchInfografis() async {
+      var response = await http.get(Uri.parse(
+          'https://webapi.bps.go.id/v1/api/list/model/infographic/lang/ind/domain/3516/key/3f07c05929293e0074b543e390b82178/'));
+      if (response.statusCode == 200) {
+        var data = jsonDecode(response.body)['data'][1];
+        print(data);
+        return compute(parseInfografis, response.body);
+      } else {
+        throw Exception('No data Found');
+      }
+    }
+
     return Scaffold(
       body: SafeArea(
         child: ListView(
@@ -81,53 +106,50 @@ class InfografisPage extends StatelessWidget {
                         ),
                       ),
 
-                      //Card Sosial Kependudukan
+                      // Card Sosial Kependudukan
                       Container(
                         margin: EdgeInsets.only(
                           top: 10,
                         ),
-                        child: SingleChildScrollView(
-                          scrollDirection: Axis.horizontal,
-                          child: Row(
-                            children: [
-                              Container(
-                                child: Row(
-                                  children: [
-                                    Container(
-                                      margin: EdgeInsets.only(
-                                        top: 146,
-                                        left: 28,
-                                        right: 28,
-                                      ),
-                                      child: ClipRRect(
-                                        borderRadius: BorderRadius.circular(40),
-                                        child: Image.asset(
-                                          'assets/images/TemplateBRSPertanian.png',
-                                          width: 338,
-                                          height: 550,
+                        child: FutureBuilder(
+                          future: fetchInfografis(),
+                          builder: (context, AsyncSnapshot snapshot) {
+                            if (!snapshot.hasData) {
+                              return Text('Theres no data');
+                            } else {
+                              print(snapshot.data[2]);
+                              return Container(
+                                height: 550,
+                                child: ListView.builder(
+                                  shrinkWrap: true,
+                                  itemCount: snapshot.data.length,
+                                  scrollDirection: Axis.horizontal,
+                                  itemBuilder: ((context, index) {
+                                    return Row(
+                                      children: [
+                                        Container(
+                                          margin: EdgeInsets.only(
+                                            top: 146,
+                                            left: 28,
+                                            right: 28,
+                                          ),
+                                          child: ClipRRect(
+                                            borderRadius:
+                                                BorderRadius.circular(40),
+                                            child: Image.network(
+                                              '${snapshot.data[index].img}',
+                                              width: 338,
+                                              height: 550,
+                                            ),
+                                          ),
                                         ),
-                                      ),
-                                    ),
-                                    Container(
-                                      margin: EdgeInsets.only(
-                                        top: 146,
-                                        left: 28,
-                                        right: 28,
-                                      ),
-                                      child: ClipRRect(
-                                        borderRadius: BorderRadius.circular(40),
-                                        child: Image.asset(
-                                          'assets/images/TemplateBRSPertanian.png',
-                                          width: 338,
-                                          height: 550,
-                                        ),
-                                      ),
-                                    ),
-                                  ],
+                                      ],
+                                    );
+                                  }),
                                 ),
-                              ),
-                            ],
-                          ),
+                              );
+                            }
+                          },
                         ),
                       ),
                     ],

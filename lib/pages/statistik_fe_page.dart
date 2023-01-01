@@ -1,9 +1,58 @@
+import 'dart:convert';
+
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:stimo/models/brs_models.dart';
+import 'package:stimo/models/publikasi_models.dart';
+import 'package:stimo/pages/BRS_detail.dart';
+import 'package:stimo/pages/berita_resmi_page.dart';
+import 'package:stimo/pages/publikasi_detail.dart';
+import 'package:stimo/pages/publikasi_page.dart';
 import 'package:stimo/theme.dart';
+import 'package:http/http.dart' as http;
+import 'package:url_launcher/url_launcher.dart';
 
 class StatistikFEPage extends StatelessWidget {
   const StatistikFEPage({Key? key}) : super(key: key);
+
+  List<PublikasiModel> parsePublikasi(String response) {
+    var list = jsonDecode(response)['data'][1] as List<dynamic>;
+    List<PublikasiModel> publikasi =
+        list.map((publik) => PublikasiModel.fromJson(publik)).toList();
+    print(publikasi.length);
+    return publikasi;
+  }
+
+  Future<List<PublikasiModel>> fetchPublikasi() async {
+    var response = await http.get(Uri.parse(
+        'https://webapi.bps.go.id/v1/api/list/model/publication/lang/ind/domain/3516/key/3f07c05929293e0074b543e390b82178/'));
+    if (response.statusCode == 200) {
+      var data = jsonDecode(response.body)['data'][1];
+      print(data);
+      return compute(parsePublikasi, response.body);
+    } else {
+      throw Exception('No data Found');
+    }
+  }
+
+  List<BRSModel> parseBRS(String response) {
+    var list = jsonDecode(response)['data'][1] as List<dynamic>;
+    List<BRSModel> brs = list.map((br) => BRSModel.fromJson(br)).toList();
+    print(brs.length);
+    return brs;
+  }
+
+  Future<List<BRSModel>> fetchBRS() async {
+    var response = await http.get(Uri.parse(
+        'https://webapi.bps.go.id/v1/api/list/model/pressrelease/lang/ind/domain/3516/key/3f07c05929293e0074b543e390b82178/'));
+    if (response.statusCode == 200) {
+      print(response.body);
+      return compute(parseBRS, response.body);
+    } else {
+      throw Exception('No data Found');
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -303,7 +352,7 @@ class StatistikFEPage extends StatelessWidget {
                                   height: 2,
                                 ),
                                 Text(
-                                  'Tabel',
+                                  'Berita Lainnya',
                                   style: blackTextStyle.copyWith(
                                     fontSize: 10,
                                     fontWeight: semiBold,
@@ -335,14 +384,14 @@ class StatistikFEPage extends StatelessWidget {
                       width: 25,
                     ),
                     Text(
-                      'Indikator Strategis',
+                      'Indikator Strategis (API MASIH ERROR)',
                       style: whiteTextStyle.copyWith(
                         fontSize: 10,
                         fontWeight: bold,
                       ),
                     ),
                     SizedBox(
-                      width: 100,
+                      width: 20,
                     ),
                     Text(
                       'Lihat Semua',
@@ -644,10 +693,18 @@ class StatistikFEPage extends StatelessWidget {
                         fontWeight: extraBold,
                       ),
                     ),
-                    Image.asset(
-                      'assets/images/ArrowBlack.png',
-                      width: 20,
-                      height: 20,
+                    GestureDetector(
+                      onTap: (() {
+                        Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                                builder: (context) => PublikasiPage()));
+                      }),
+                      child: Image.asset(
+                        'assets/images/ArrowBlack.png',
+                        width: 20,
+                        height: 20,
+                      ),
                     ),
                   ],
                 ),
@@ -655,363 +712,412 @@ class StatistikFEPage extends StatelessWidget {
 
               //Publikasi Statistik Card 1
               Container(
-                margin: EdgeInsets.only(
-                  top: 30,
-                  left: 20,
-                  right: 20,
-                ),
-                width: 280,
-                height: 165,
-                decoration: BoxDecoration(
-                  color: Color(0xffFFFFFF),
-                  borderRadius: BorderRadius.circular(15),
-                  boxShadow: [
-                    BoxShadow(
-                      color: Color(0x40000000),
-                      spreadRadius: 0,
-                      blurRadius: 11.0,
-                      offset: Offset(0, 3),
-                    ),
-                  ],
-                ),
-                child: Stack(
-                  children: [
-                    Align(
-                      alignment: Alignment.bottomCenter,
-                      child: Row(
-                        children: [
-                          SizedBox(
-                            width: 140,
-                          ),
-                          Column(
-                            children: [
-                              SizedBox(
-                                height: 15,
-                              ),
-                              Text(
-                                'Statistik Daerah Kabupaten\nMojokerto 2022',
-                                style: blackTextStyle.copyWith(
-                                  fontSize: 14,
-                                  fontWeight: extraBold,
-                                ),
-                              ),
-                            ],
-                          ),
-                        ],
-                      ),
-                    ),
-                    Container(
-                      child: Image.asset(
-                        'assets/images/Container.png',
-                        height: 165,
-                      ),
-                    ),
-                    Container(
-                      margin: EdgeInsets.only(
-                        top: 2,
-                      ),
-                      child: Row(
-                        children: [
-                          Container(
+                height: 400,
+                child: FutureBuilder(
+                  future: fetchPublikasi(),
+                  builder: (context, AsyncSnapshot snapshot) {
+                    if (!snapshot.hasData) {
+                      return Text("There's no data");
+                    } else {
+                      return Container(
+                          child: ListView.builder(
+                        itemCount: 2,
+                        shrinkWrap: true,
+                        itemBuilder: (context, index) {
+                          return Container(
                             margin: EdgeInsets.only(
-                              top: 65,
-                              left: 140,
+                              top: 30,
+                              left: 20,
+                              right: 20,
                             ),
-                            child: Text(
-                              'Tanggal Rilis : ',
-                              style: blackTextStyle.copyWith(
-                                fontSize: 10,
-                                fontWeight: regular,
-                              ),
-                            ),
-                          ),
-                          Container(
-                            margin: EdgeInsets.only(
-                              top: 66,
-                              left: 1,
-                            ),
-                            child: Text(
-                              '2022-09-28',
-                              style: blueseaTextStyle.copyWith(
-                                fontSize: 10,
-                                fontWeight: regular,
-                              ),
-                            ),
-                          ),
-                        ],
-                      ),
-                    ),
-                    Container(
-                      child: Row(
-                        children: [
-                          Container(
-                            margin: EdgeInsets.only(
-                              top: 90,
-                              left: 140,
-                            ),
-                            child: Text(
-                              'Ukuran File : ',
-                              style: blackTextStyle.copyWith(
-                                fontSize: 10,
-                                fontWeight: regular,
-                              ),
-                            ),
-                          ),
-                          Container(
-                            margin: EdgeInsets.only(
-                              top: 91,
-                              left: 1,
-                            ),
-                            child: Text(
-                              '14,5 MB',
-                              style: blackTextStyle.copyWith(
-                                fontSize: 10,
-                                fontWeight: regular,
-                              ),
-                            ),
-                          ),
-                        ],
-                      ),
-                    ),
-                    Container(
-                      margin: EdgeInsets.only(
-                        top: 125,
-                        left: 140,
-                      ),
-                      child: Row(
-                        children: [
-                          Container(
+                            width: 280,
+                            height: 165,
                             decoration: BoxDecoration(
-                              borderRadius: BorderRadius.circular(10),
-                              color: Color(0xffFF5252),
-                            ),
-                            child: Container(
-                              margin: EdgeInsets.all(8),
-                              child: Text(
-                                'Unduh',
-                                style: whiteTextStyle.copyWith(
-                                  fontWeight: bold,
-                                  fontSize: 9,
+                              color: Color(0xffFFFFFF),
+                              borderRadius: BorderRadius.circular(15),
+                              boxShadow: [
+                                BoxShadow(
+                                  color: Color(0x40000000),
+                                  spreadRadius: 0,
+                                  blurRadius: 11.0,
+                                  offset: Offset(0, 3),
                                 ),
-                              ),
+                              ],
                             ),
-                          ),
-                          SizedBox(
-                            width: 10,
-                          ),
-                          Container(
-                            width: 65,
-                            height: 29,
-                            decoration: BoxDecoration(
-                              borderRadius: BorderRadius.circular(10),
-                              color: Color(0xff3876D3),
-                            ),
-                            child: Row(
+                            child: Stack(
                               children: [
-                                TextButton(
-                                  onPressed: () {
-                                    Navigator.pushNamed(
-                                        context, '/detail_publikasi');
-                                  },
-                                  child: Container(
-                                    child: Text(
-                                      'Pratinjau',
-                                      style: whiteTextStyle.copyWith(
-                                        fontWeight: bold,
-                                        fontSize: 9,
+                                Align(
+                                  alignment: Alignment.bottomCenter,
+                                  child: Row(
+                                    children: [
+                                      SizedBox(
+                                        width: 140,
                                       ),
-                                    ),
+                                      Container(
+                                        width: 190,
+                                        child: Column(
+                                          children: [
+                                            SizedBox(
+                                              height: 15,
+                                            ),
+                                            Expanded(
+                                              child: Text(
+                                                '${snapshot.data[index].title}',
+                                                style: blackTextStyle.copyWith(
+                                                  fontSize: 14,
+                                                  fontWeight: extraBold,
+                                                ),
+                                              ),
+                                            ),
+                                          ],
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+                                ),
+                                Container(
+                                  child: Image.network(
+                                    '${snapshot.data[index].cover}',
+                                    height: 165,
+                                  ),
+                                ),
+                                Container(
+                                  margin: EdgeInsets.only(
+                                    top: 2,
+                                  ),
+                                  child: Row(
+                                    children: [
+                                      Container(
+                                        margin: EdgeInsets.only(
+                                          top: 65,
+                                          left: 140,
+                                        ),
+                                        child: Text(
+                                          'Tanggal Rilis : ',
+                                          style: blackTextStyle.copyWith(
+                                            fontSize: 10,
+                                            fontWeight: regular,
+                                          ),
+                                        ),
+                                      ),
+                                      Container(
+                                        margin: EdgeInsets.only(
+                                          top: 66,
+                                          left: 1,
+                                        ),
+                                        child: Text(
+                                          '${snapshot.data[index].rlDate}',
+                                          style: blueseaTextStyle.copyWith(
+                                            fontSize: 10,
+                                            fontWeight: regular,
+                                          ),
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+                                ),
+                                Container(
+                                  child: Row(
+                                    children: [
+                                      Container(
+                                        margin: EdgeInsets.only(
+                                          top: 90,
+                                          left: 140,
+                                        ),
+                                        child: Text(
+                                          'Ukuran File : ',
+                                          style: blackTextStyle.copyWith(
+                                            fontSize: 10,
+                                            fontWeight: regular,
+                                          ),
+                                        ),
+                                      ),
+                                      Container(
+                                        margin: EdgeInsets.only(
+                                          top: 91,
+                                          left: 1,
+                                        ),
+                                        child: Text(
+                                          '${snapshot.data[index].size}',
+                                          style: blackTextStyle.copyWith(
+                                            fontSize: 10,
+                                            fontWeight: regular,
+                                          ),
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+                                ),
+                                Container(
+                                  margin: EdgeInsets.only(
+                                    top: 125,
+                                    left: 140,
+                                  ),
+                                  child: Row(
+                                    children: [
+                                      Container(
+                                        decoration: BoxDecoration(
+                                          borderRadius:
+                                              BorderRadius.circular(10),
+                                          color: Color(0xffFF5252),
+                                        ),
+                                        child: Container(
+                                          margin: EdgeInsets.all(8),
+                                          child: GestureDetector(
+                                            onTap: () async {
+                                              var url =
+                                                  '${snapshot.data[index].pdf}';
+                                              final uri = Uri.parse(url);
+                                              if (await canLaunchUrl(uri)) {
+                                                await launchUrl(
+                                                  uri,
+                                                  mode: LaunchMode
+                                                      .externalApplication,
+                                                );
+                                              } else {
+                                                throw 'Could not launch $uri';
+                                              }
+                                            },
+                                            child: Text(
+                                              'Unduh',
+                                              style: whiteTextStyle.copyWith(
+                                                fontWeight: bold,
+                                                fontSize: 9,
+                                              ),
+                                            ),
+                                          ),
+                                        ),
+                                      ),
+                                      SizedBox(
+                                        width: 10,
+                                      ),
+                                      Container(
+                                        width: 65,
+                                        height: 29,
+                                        decoration: BoxDecoration(
+                                          borderRadius:
+                                              BorderRadius.circular(10),
+                                          color: Color(0xff3876D3),
+                                        ),
+                                        child: Row(
+                                          children: [
+                                            TextButton(
+                                              onPressed: () {
+                                                Navigator.push(
+                                                    context,
+                                                    MaterialPageRoute(
+                                                        builder: (context) =>
+                                                            PublikasiDetail(
+                                                                index: snapshot
+                                                                    .data[index]
+                                                                    .pubId)));
+                                              },
+                                              child: Container(
+                                                child: Text(
+                                                  'Pratinjau',
+                                                  style:
+                                                      whiteTextStyle.copyWith(
+                                                    fontWeight: bold,
+                                                    fontSize: 9,
+                                                  ),
+                                                ),
+                                              ),
+                                            ),
+                                          ],
+                                        ),
+                                      ),
+                                    ],
                                   ),
                                 ),
                               ],
                             ),
-                          ),
-                        ],
-                      ),
-                    ),
-                  ],
+                          );
+                        },
+                      ));
+                    }
+                  },
                 ),
               ),
 
               //Publikasi Statistik 2
-              Container(
-                margin: EdgeInsets.only(
-                  top: 30,
-                  left: 20,
-                  right: 20,
-                ),
-                width: 280,
-                height: 165,
-                decoration: BoxDecoration(
-                  color: Color(0xffFFFFFF),
-                  borderRadius: BorderRadius.circular(15),
-                  boxShadow: [
-                    BoxShadow(
-                      color: Color(0x40000000),
-                      spreadRadius: 0,
-                      blurRadius: 11.0,
-                      offset: Offset(0, 3),
-                    ),
-                  ],
-                ),
-                child: Stack(
-                  children: [
-                    Align(
-                      alignment: Alignment.bottomCenter,
-                      child: Row(
-                        children: [
-                          SizedBox(
-                            width: 140,
-                          ),
-                          Column(
-                            children: [
-                              SizedBox(
-                                height: 15,
-                              ),
-                              Text(
-                                'Statistik Daerah Kabupaten\nMojokerto 2022',
-                                style: blackTextStyle.copyWith(
-                                  fontSize: 14,
-                                  fontWeight: extraBold,
-                                ),
-                              ),
-                            ],
-                          ),
-                        ],
-                      ),
-                    ),
-                    Container(
-                      child: Image.asset(
-                        'assets/images/Container.png',
-                        height: 165,
-                      ),
-                    ),
-                    Container(
-                      margin: EdgeInsets.only(
-                        top: 2,
-                      ),
-                      child: Row(
-                        children: [
-                          Container(
-                            margin: EdgeInsets.only(
-                              top: 65,
-                              left: 140,
-                            ),
-                            child: Text(
-                              'Tanggal Rilis : ',
-                              style: blackTextStyle.copyWith(
-                                fontSize: 10,
-                                fontWeight: regular,
-                              ),
-                            ),
-                          ),
-                          Container(
-                            margin: EdgeInsets.only(
-                              top: 66,
-                              left: 1,
-                            ),
-                            child: Text(
-                              '2022-09-28',
-                              style: blueseaTextStyle.copyWith(
-                                fontSize: 10,
-                                fontWeight: regular,
-                              ),
-                            ),
-                          ),
-                        ],
-                      ),
-                    ),
-                    Container(
-                      child: Row(
-                        children: [
-                          Container(
-                            margin: EdgeInsets.only(
-                              top: 90,
-                              left: 140,
-                            ),
-                            child: Text(
-                              'Ukuran File : ',
-                              style: blackTextStyle.copyWith(
-                                fontSize: 10,
-                                fontWeight: regular,
-                              ),
-                            ),
-                          ),
-                          Container(
-                            margin: EdgeInsets.only(
-                              top: 91,
-                              left: 1,
-                            ),
-                            child: Text(
-                              '14,5 MB',
-                              style: blackTextStyle.copyWith(
-                                fontSize: 10,
-                                fontWeight: regular,
-                              ),
-                            ),
-                          ),
-                        ],
-                      ),
-                    ),
-                    Container(
-                      margin: EdgeInsets.only(
-                        top: 125,
-                        left: 140,
-                      ),
-                      child: Row(
-                        children: [
-                          Container(
-                            decoration: BoxDecoration(
-                              borderRadius: BorderRadius.circular(10),
-                              color: Color(0xffFF5252),
-                            ),
-                            child: Container(
-                              margin: EdgeInsets.all(8),
-                              child: Text(
-                                'Unduh',
-                                style: whiteTextStyle.copyWith(
-                                  fontWeight: bold,
-                                  fontSize: 9,
-                                ),
-                              ),
-                            ),
-                          ),
-                          SizedBox(
-                            width: 10,
-                          ),
-                          Container(
-                            width: 65,
-                            height: 29,
-                            decoration: BoxDecoration(
-                              borderRadius: BorderRadius.circular(10),
-                              color: Color(0xff3876D3),
-                            ),
-                            child: Row(
-                              children: [
-                                TextButton(
-                                  onPressed: () {
-                                    Navigator.pushNamed(
-                                        context, '/detail_publikasi');
-                                  },
-                                  child: Container(
-                                    child: Text(
-                                      'Pratinjau',
-                                      style: whiteTextStyle.copyWith(
-                                        fontWeight: bold,
-                                        fontSize: 9,
-                                      ),
-                                    ),
-                                  ),
-                                ),
-                              ],
-                            ),
-                          ),
-                        ],
-                      ),
-                    ),
-                  ],
-                ),
-              ),
+              // Container(
+              //   margin: EdgeInsets.only(
+              //     top: 30,
+              //     left: 20,
+              //     right: 20,
+              //   ),
+              //   width: 280,
+              //   height: 165,
+              //   decoration: BoxDecoration(
+              //     color: Color(0xffFFFFFF),
+              //     borderRadius: BorderRadius.circular(15),
+              //     boxShadow: [
+              //       BoxShadow(
+              //         color: Color(0x40000000),
+              //         spreadRadius: 0,
+              //         blurRadius: 11.0,
+              //         offset: Offset(0, 3),
+              //       ),
+              //     ],
+              //   ),
+              //   child: Stack(
+              //     children: [
+              //       Align(
+              //         alignment: Alignment.bottomCenter,
+              //         child: Row(
+              //           children: [
+              //             SizedBox(
+              //               width: 140,
+              //             ),
+              //             Column(
+              //               children: [
+              //                 SizedBox(
+              //                   height: 15,
+              //                 ),
+              //                 Text(
+              //                   'Statistik Daerah Kabupaten\nMojokerto 2022',
+              //                   style: blackTextStyle.copyWith(
+              //                     fontSize: 14,
+              //                     fontWeight: extraBold,
+              //                   ),
+              //                 ),
+              //               ],
+              //             ),
+              //           ],
+              //         ),
+              //       ),
+              //       Container(
+              //         child: Image.asset(
+              //           'assets/images/Container.png',
+              //           height: 165,
+              //         ),
+              //       ),
+              //       Container(
+              //         margin: EdgeInsets.only(
+              //           top: 2,
+              //         ),
+              //         child: Row(
+              //           children: [
+              //             Container(
+              //               margin: EdgeInsets.only(
+              //                 top: 65,
+              //                 left: 140,
+              //               ),
+              //               child: Text(
+              //                 'Tanggal Rilis : ',
+              //                 style: blackTextStyle.copyWith(
+              //                   fontSize: 10,
+              //                   fontWeight: regular,
+              //                 ),
+              //               ),
+              //             ),
+              //             Container(
+              //               margin: EdgeInsets.only(
+              //                 top: 66,
+              //                 left: 1,
+              //               ),
+              //               child: Text(
+              //                 '2022-09-28',
+              //                 style: blueseaTextStyle.copyWith(
+              //                   fontSize: 10,
+              //                   fontWeight: regular,
+              //                 ),
+              //               ),
+              //             ),
+              //           ],
+              //         ),
+              //       ),
+              //       Container(
+              //         child: Row(
+              //           children: [
+              //             Container(
+              //               margin: EdgeInsets.only(
+              //                 top: 90,
+              //                 left: 140,
+              //               ),
+              //               child: Text(
+              //                 'Ukuran File : ',
+              //                 style: blackTextStyle.copyWith(
+              //                   fontSize: 10,
+              //                   fontWeight: regular,
+              //                 ),
+              //               ),
+              //             ),
+              //             Container(
+              //               margin: EdgeInsets.only(
+              //                 top: 91,
+              //                 left: 1,
+              //               ),
+              //               child: Text(
+              //                 '14,5 MB',
+              //                 style: blackTextStyle.copyWith(
+              //                   fontSize: 10,
+              //                   fontWeight: regular,
+              //                 ),
+              //               ),
+              //             ),
+              //           ],
+              //         ),
+              //       ),
+              //       Container(
+              //         margin: EdgeInsets.only(
+              //           top: 125,
+              //           left: 140,
+              //         ),
+              //         child: Row(
+              //           children: [
+              //             Container(
+              //               decoration: BoxDecoration(
+              //                 borderRadius: BorderRadius.circular(10),
+              //                 color: Color(0xffFF5252),
+              //               ),
+              //               child: Container(
+              //                 margin: EdgeInsets.all(8),
+              //                 child: Text(
+              //                   'Unduh',
+              //                   style: whiteTextStyle.copyWith(
+              //                     fontWeight: bold,
+              //                     fontSize: 9,
+              //                   ),
+              //                 ),
+              //               ),
+              //             ),
+              //             SizedBox(
+              //               width: 10,
+              //             ),
+              //             Container(
+              //               width: 65,
+              //               height: 29,
+              //               decoration: BoxDecoration(
+              //                 borderRadius: BorderRadius.circular(10),
+              //                 color: Color(0xff3876D3),
+              //               ),
+              //               child: Row(
+              //                 children: [
+              //                   TextButton(
+              //                     onPressed: () {
+              //                       Navigator.pushNamed(
+              //                           context, '/detail_publikasi');
+              //                     },
+              //                     child: Container(
+              //                       child: Text(
+              //                         'Pratinjau',
+              //                         style: whiteTextStyle.copyWith(
+              //                           fontWeight: bold,
+              //                           fontSize: 9,
+              //                         ),
+              //                       ),
+              //                     ),
+              //                   ),
+              //                 ],
+              //               ),
+              //             ),
+              //           ],
+              //         ),
+              //       ),
+              //     ],
+              //   ),
+              // ),
               Container(
                 margin: EdgeInsets.only(
                   top: 50,
@@ -1028,343 +1134,260 @@ class StatistikFEPage extends StatelessWidget {
                         fontWeight: bold,
                       ),
                     ),
-                    Image.asset(
-                      'assets/images/ArrowBlack.png',
-                      width: 20,
-                      height: 20,
-                    ),
-                  ],
-                ),
-              ),
-              //Berita Resmi Statistik Card 2
-              Container(
-                margin: EdgeInsets.only(
-                  top: 30,
-                  left: 24,
-                  right: 24,
-                ),
-                width: 300,
-                height: 160,
-                decoration: BoxDecoration(
-                  color: Color(0xffFFB5B5),
-                  borderRadius: BorderRadius.circular(9),
-                ),
-                child: Stack(
-                  children: [
-                    Align(
-                      alignment: Alignment.bottomCenter,
-                      child: Row(
-                        children: [
-                          SizedBox(
-                            width: 62,
-                          ),
-                          Column(
-                            children: [
-                              SizedBox(
-                                height: 10,
-                              ),
-                              Text(
-                                'Jumlah Pelanggan dan Air yang\nDisalurkan Menurut Kabupaten\n/Kota di Provinsi Jawa Timur, 2022',
-                                style: dangerTextStyle.copyWith(
-                                  fontSize: 13,
-                                  fontWeight: bold,
-                                ),
-                              ),
-                            ],
-                          ),
-                        ],
-                      ),
-                    ),
-                    Align(
-                      alignment: Alignment.bottomCenter,
-                      child: Row(
-                        children: [
-                          SizedBox(
-                            width: 62,
-                          ),
-                          Column(
-                            children: [
-                              SizedBox(
-                                height: 70,
-                              ),
-                              Row(
-                                children: [
-                                  Text(
-                                    '2021-09-17',
-                                    style: GoogleFonts.poppins(
-                                      fontSize: 13,
-                                      fontWeight: regular,
-                                      fontStyle: FontStyle.italic,
-                                      color: Color(0xffFF2E00),
-                                    ),
-                                  ),
-                                  SizedBox(
-                                    width: 6,
-                                  ),
-                                  Container(
-                                    width: 5,
-                                    height: 5,
-                                    decoration: BoxDecoration(
-                                      shape: BoxShape.circle,
-                                      color: Color(0xff980000),
-                                    ),
-                                  ),
-                                  SizedBox(
-                                    width: 6,
-                                  ),
-                                  Text(
-                                    '0.4 MB',
-                                    style: GoogleFonts.poppins(
-                                      fontSize: 13,
-                                      fontWeight: regular,
-                                      fontStyle: FontStyle.italic,
-                                      color: Color(0xffFF2E00),
-                                    ),
-                                  ),
-                                ],
-                              ),
-                              Row(
-                                children: [
-                                  SizedBox(
-                                    height: 70,
-                                  ),
-                                  Container(
-                                    width: 60,
-                                    height: 34,
-                                    decoration: BoxDecoration(
-                                      borderRadius: BorderRadius.circular(3),
-                                      color: Color(0xffBD0000),
-                                    ),
-                                    child: Container(
-                                      margin: EdgeInsets.only(
-                                        top: 8,
-                                      ),
-                                      child: Text(
-                                        'UNDUH',
-                                        style: whiteTextStyle.copyWith(
-                                          fontSize: 12,
-                                          fontWeight: regular,
-                                        ),
-                                        textAlign: TextAlign.center,
-                                      ),
-                                    ),
-                                  ),
-                                  SizedBox(
-                                    width: 6,
-                                  ),
-                                  Container(
-                                    width: 65,
-                                    height: 34,
-                                    decoration: BoxDecoration(
-                                      borderRadius: BorderRadius.circular(3),
-                                      color: Color(0xff004171),
-                                    ),
-                                    child: Row(
-                                      children: [
-                                        TextButton(
-                                          onPressed: () {
-                                            Navigator.pushNamed(
-                                                context, '/BRS_detail');
-                                          },
-                                          child: Container(
-                                            child: Text(
-                                              'DETAIL',
-                                              style: whiteTextStyle.copyWith(
-                                                fontSize: 12,
-                                                fontWeight: regular,
-                                              ),
-                                              textAlign: TextAlign.center,
-                                            ),
-                                          ),
-                                        ),
-                                      ],
-                                    ),
-                                  ),
-                                ],
-                              ),
-                            ],
-                          ),
-                        ],
-                      ),
-                    ),
-                    Container(
-                      margin: EdgeInsets.only(
-                        top: 2,
-                        left: 10,
-                      ),
+                    GestureDetector(
+                      onTap: () {
+                        Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                                builder: (context) => BeritaResmi()));
+                      },
                       child: Image.asset(
-                        'assets/images/StatisticIcons.png',
-                        height: 50,
-                        width: 50,
+                        'assets/images/ArrowBlack.png',
+                        width: 20,
+                        height: 20,
                       ),
                     ),
                   ],
                 ),
               ),
-
-              //Berita Resmi Statistik Card 2
               Container(
-                margin: EdgeInsets.only(
-                  top: 30,
-                  left: 24,
-                  right: 24,
-                ),
-                width: 300,
-                height: 160,
-                decoration: BoxDecoration(
-                  color: Color(0xffFFB5B5),
-                  borderRadius: BorderRadius.circular(9),
-                ),
-                child: Stack(
-                  children: [
-                    Align(
-                      alignment: Alignment.bottomCenter,
-                      child: Row(
-                        children: [
-                          SizedBox(
-                            width: 62,
-                          ),
-                          Column(
-                            children: [
-                              SizedBox(
-                                height: 10,
-                              ),
-                              Text(
-                                'Jumlah Pelanggan dan Air yang\nDisalurkan Menurut Kabupaten\n/Kota di Provinsi Jawa Timur, 2022',
-                                style: dangerTextStyle.copyWith(
-                                  fontSize: 13,
-                                  fontWeight: bold,
+                child: FutureBuilder(
+                  future: fetchBRS(),
+                  builder: (BuildContext context, AsyncSnapshot snapshot) {
+                    print(snapshot);
+                    if (!snapshot.hasData) {
+                      return Text('No data Found');
+                    } else {
+                      return Container(
+                        height: 400,
+                        child: ListView.builder(
+                          shrinkWrap: true,
+                          itemCount: 2,
+                          itemBuilder: (context, index) {
+                            return GestureDetector(
+                              onTap: () {
+                                Navigator.push(
+                                    context,
+                                    MaterialPageRoute(
+                                        builder: (context) => BRSDetail(
+                                            index:
+                                                snapshot.data[index].brsId)));
+                              },
+                              child: Container(
+                                margin: EdgeInsets.only(
+                                  top: 30,
+                                  left: 24,
+                                  right: 24,
                                 ),
-                              ),
-                            ],
-                          ),
-                        ],
-                      ),
-                    ),
-                    Align(
-                      alignment: Alignment.bottomCenter,
-                      child: Row(
-                        children: [
-                          SizedBox(
-                            width: 62,
-                          ),
-                          Column(
-                            children: [
-                              SizedBox(
-                                height: 70,
-                              ),
-                              Row(
-                                children: [
-                                  Text(
-                                    '2021-09-17',
-                                    style: GoogleFonts.poppins(
-                                      fontSize: 13,
-                                      fontWeight: regular,
-                                      fontStyle: FontStyle.italic,
-                                      color: Color(0xffFF2E00),
-                                    ),
-                                  ),
-                                  SizedBox(
-                                    width: 6,
-                                  ),
-                                  Container(
-                                    width: 5,
-                                    height: 5,
-                                    decoration: BoxDecoration(
-                                      shape: BoxShape.circle,
-                                      color: Color(0xff980000),
-                                    ),
-                                  ),
-                                  SizedBox(
-                                    width: 6,
-                                  ),
-                                  Text(
-                                    '0.4 MB',
-                                    style: GoogleFonts.poppins(
-                                      fontSize: 13,
-                                      fontWeight: regular,
-                                      fontStyle: FontStyle.italic,
-                                      color: Color(0xffFF2E00),
-                                    ),
-                                  ),
-                                ],
-                              ),
-                              Row(
-                                children: [
-                                  SizedBox(
-                                    height: 70,
-                                  ),
-                                  Container(
-                                    width: 60,
-                                    height: 34,
-                                    decoration: BoxDecoration(
-                                      borderRadius: BorderRadius.circular(3),
-                                      color: Color(0xffBD0000),
-                                    ),
-                                    child: Container(
-                                      margin: EdgeInsets.only(
-                                        top: 8,
-                                      ),
-                                      child: Text(
-                                        'UNDUH',
-                                        style: whiteTextStyle.copyWith(
-                                          fontSize: 12,
-                                          fontWeight: regular,
-                                        ),
-                                        textAlign: TextAlign.center,
-                                      ),
-                                    ),
-                                  ),
-                                  SizedBox(
-                                    width: 6,
-                                  ),
-                                  Container(
-                                    width: 65,
-                                    height: 34,
-                                    decoration: BoxDecoration(
-                                      borderRadius: BorderRadius.circular(3),
-                                      color: Color(0xff004171),
-                                    ),
-                                    child: Row(
-                                      children: [
-                                        TextButton(
-                                          onPressed: () {
-                                            Navigator.pushNamed(
-                                                context, '/BRS_detail');
-                                          },
-                                          child: Container(
-                                            child: Text(
-                                              'DETAIL',
-                                              style: whiteTextStyle.copyWith(
-                                                fontSize: 12,
-                                                fontWeight: regular,
-                                              ),
-                                              textAlign: TextAlign.center,
+                                width: 300,
+                                height: 160,
+                                decoration: BoxDecoration(
+                                  color: Color(0xffFFB5B5),
+                                  borderRadius: BorderRadius.circular(9),
+                                ),
+                                child: Stack(
+                                  children: [
+                                    Align(
+                                      alignment: Alignment.bottomCenter,
+                                      child: Row(
+                                        children: [
+                                          SizedBox(
+                                            width: 62,
+                                          ),
+                                          Container(
+                                            width: 260,
+                                            child: Column(
+                                              children: [
+                                                SizedBox(
+                                                  height: 10,
+                                                ),
+                                                Expanded(
+                                                  child: Text(
+                                                    '${snapshot.data[index].title}',
+                                                    style: dangerTextStyle
+                                                        .copyWith(
+                                                      fontSize: 13,
+                                                      fontWeight: bold,
+                                                    ),
+                                                  ),
+                                                ),
+                                              ],
                                             ),
                                           ),
-                                        ),
-                                      ],
+                                        ],
+                                      ),
                                     ),
-                                  ),
-                                ],
+                                    Align(
+                                      alignment: Alignment.bottomCenter,
+                                      child: Row(
+                                        children: [
+                                          SizedBox(
+                                            width: 62,
+                                          ),
+                                          Column(
+                                            children: [
+                                              SizedBox(
+                                                height: 70,
+                                              ),
+                                              Row(
+                                                children: [
+                                                  Text(
+                                                    '${snapshot.data[index].rlDate}',
+                                                    style: GoogleFonts.poppins(
+                                                      fontSize: 13,
+                                                      fontWeight: regular,
+                                                      fontStyle:
+                                                          FontStyle.italic,
+                                                      color: Color(0xffFF2E00),
+                                                    ),
+                                                  ),
+                                                  SizedBox(
+                                                    width: 6,
+                                                  ),
+                                                  Container(
+                                                    width: 5,
+                                                    height: 5,
+                                                    decoration: BoxDecoration(
+                                                      shape: BoxShape.circle,
+                                                      color: Color(0xff980000),
+                                                    ),
+                                                  ),
+                                                  SizedBox(
+                                                    width: 6,
+                                                  ),
+                                                  Text(
+                                                    '${snapshot.data[index].size}',
+                                                    style: GoogleFonts.poppins(
+                                                      fontSize: 13,
+                                                      fontWeight: regular,
+                                                      fontStyle:
+                                                          FontStyle.italic,
+                                                      color: Color(0xffFF2E00),
+                                                    ),
+                                                  ),
+                                                ],
+                                              ),
+                                              Row(
+                                                children: [
+                                                  SizedBox(
+                                                    height: 70,
+                                                  ),
+                                                  Container(
+                                                    width: 60,
+                                                    height: 34,
+                                                    decoration: BoxDecoration(
+                                                      borderRadius:
+                                                          BorderRadius.circular(
+                                                              3),
+                                                      color: Color(0xffBD0000),
+                                                    ),
+                                                    child: Container(
+                                                      margin: EdgeInsets.only(
+                                                        top: 8,
+                                                      ),
+                                                      child: GestureDetector(
+                                                        onTap: () async {
+                                                          var url =
+                                                              '${snapshot.data[index].pdf}';
+                                                          final uri =
+                                                              Uri.parse(url);
+                                                          if (await canLaunchUrl(
+                                                              uri)) {
+                                                            await launchUrl(
+                                                              uri,
+                                                              mode: LaunchMode
+                                                                  .externalApplication,
+                                                            );
+                                                          } else {
+                                                            throw 'Could not launch $uri';
+                                                          }
+                                                        },
+                                                        child: Text(
+                                                          'UNDUH',
+                                                          style: whiteTextStyle
+                                                              .copyWith(
+                                                            fontSize: 12,
+                                                            fontWeight: regular,
+                                                          ),
+                                                          textAlign:
+                                                              TextAlign.center,
+                                                        ),
+                                                      ),
+                                                    ),
+                                                  ),
+                                                  SizedBox(
+                                                    width: 6,
+                                                  ),
+                                                  Container(
+                                                    width: 65,
+                                                    height: 34,
+                                                    decoration: BoxDecoration(
+                                                      borderRadius:
+                                                          BorderRadius.circular(
+                                                              3),
+                                                      color: Color(0xff004171),
+                                                    ),
+                                                    child: Row(
+                                                      children: [
+                                                        TextButton(
+                                                          onPressed: () {
+                                                            Navigator.push(
+                                                              context,
+                                                              MaterialPageRoute(
+                                                                builder: (context) => BRSDetail(
+                                                                    index: snapshot
+                                                                        .data[
+                                                                            index]
+                                                                        .brsId),
+                                                              ),
+                                                            );
+                                                          },
+                                                          child: Container(
+                                                            child: Text(
+                                                              'DETAIL',
+                                                              style:
+                                                                  whiteTextStyle
+                                                                      .copyWith(
+                                                                fontSize: 12,
+                                                                fontWeight:
+                                                                    regular,
+                                                              ),
+                                                              textAlign:
+                                                                  TextAlign
+                                                                      .center,
+                                                            ),
+                                                          ),
+                                                        ),
+                                                      ],
+                                                    ),
+                                                  ),
+                                                ],
+                                              ),
+                                            ],
+                                          ),
+                                        ],
+                                      ),
+                                    ),
+                                    Container(
+                                      margin: EdgeInsets.only(
+                                        top: 2,
+                                        left: 10,
+                                      ),
+                                      child: Image.asset(
+                                        'assets/images/StatisticIcons.png',
+                                        height: 50,
+                                        width: 50,
+                                      ),
+                                    ),
+                                  ],
+                                ),
                               ),
-                            ],
-                          ),
-                        ],
-                      ),
-                    ),
-                    Container(
-                      margin: EdgeInsets.only(
-                        top: 2,
-                        left: 10,
-                      ),
-                      child: Image.asset(
-                        'assets/images/StatisticIcons.png',
-                        height: 50,
-                        width: 50,
-                      ),
-                    ),
-                  ],
+                            );
+                          },
+                        ),
+                      );
+                    }
+                  },
                 ),
               ),
               SizedBox(
