@@ -14,15 +14,15 @@ class BeritaResmi extends StatelessWidget {
   const BeritaResmi({Key? key}) : super(key: key);
 
   List<BRSModel> parseBRS(String response) {
-    var list = jsonDecode(response)['data'][1] as List<dynamic>;
+    var list = jsonDecode(response)['data'] as List<dynamic>;
     List<BRSModel> brs = list.map((br) => BRSModel.fromJson(br)).toList();
     print(brs.length);
     return brs;
   }
 
   Future<List<BRSModel>> fetchBRS() async {
-    var response = await http.get(Uri.parse(
-        'https://webapi.bps.go.id/v1/api/list/model/pressrelease/lang/ind/domain/3516/key/3f07c05929293e0074b543e390b82178/'));
+    var response =
+        await http.get(Uri.parse('http://192.168.18.12:8000/api/berita-all'));
     if (response.statusCode == 200) {
       print(response.body);
       return compute(parseBRS, response.body);

@@ -3,17 +3,11 @@ class InfografisModel {
   String? title;
   String? img;
   String? desc;
-  int? category;
+  String? category;
   String? dl;
 
-  InfografisModel({
-    this.infId,
-    this.title,
-    this.img,
-    this.desc,
-    this.category,
-    this.dl,
-  });
+  InfografisModel(
+      {this.infId, this.title, this.img, this.desc, this.category, this.dl});
 
   InfografisModel.fromJson(Map<String, dynamic> json) {
     infId = json['inf_id'];

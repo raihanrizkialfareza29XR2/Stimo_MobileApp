@@ -16,7 +16,7 @@ class GrafikPage extends StatelessWidget {
   String baseUrl = 'http://192.168.18.12:8000/api';
 
   List<GrafikModel> parseGrafik(String response) {
-    var list = jsonDecode(response)['data'][1] as List<dynamic>;
+    var list = jsonDecode(response)['data'] as List<dynamic>;
     List<GrafikModel> grafiks =
         list.map((grafik) => GrafikModel.fromJson(grafik)).toList();
     print(grafiks.length);
@@ -24,10 +24,10 @@ class GrafikPage extends StatelessWidget {
   }
 
   Future<List<GrafikModel>> fetchGrafik() async {
-    var response = await http.get(Uri.parse(
-        'https://webapi.bps.go.id/v1/api/list/model/turth/lang/ind/domain/3516/key/3f07c05929293e0074b543e390b82178/'));
+    var response =
+        await http.get(Uri.parse('http://192.168.18.12:8000/api/grafik-all'));
     if (response.statusCode == 200) {
-      var data = jsonDecode(response.body)['data'][1];
+      var data = jsonDecode(response.body)['data'];
       print(data);
       return compute(parseGrafik, response.body);
     } else {

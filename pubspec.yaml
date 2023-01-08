@@ -41,6 +41,14 @@ dependencies:
   flutter_html: ^2.2.1
   flutter_widget_from_html: ^0.9.0+2
   url_launcher: ^6.1.7
+  charts_flutter: ^0.12.0
+  flutter_launcher_icons: '^0.11.0'
+
+flutter_icons:
+  android: 'launcher_icon'
+  ios: true
+  image_path: 'assets/icon/icon.png'
+  min_sdk_android: 18
 
 dev_dependencies:
   flutter_test:

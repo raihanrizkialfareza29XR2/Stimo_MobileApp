@@ -10,13 +10,14 @@ import 'package:stimo/models/publikasi_models.dart';
 import 'package:stimo/pages/publikasi_detail.dart';
 import 'package:stimo/theme.dart';
 import 'package:http/http.dart' as http;
+import 'package:url_launcher/url_launcher.dart';
 
 class PublikasiPage extends StatelessWidget {
   const PublikasiPage({Key? key}) : super(key: key);
 
   @override
   List<PublikasiModel> parsePublikasi(String response) {
-    var list = jsonDecode(response)['data'][1] as List<dynamic>;
+    var list = jsonDecode(response)['data'] as List<dynamic>;
     List<PublikasiModel> publikasi =
         list.map((publik) => PublikasiModel.fromJson(publik)).toList();
     print(publikasi.length);
@@ -24,10 +25,10 @@ class PublikasiPage extends StatelessWidget {
   }
 
   Future<List<PublikasiModel>> fetchPublikasi() async {
-    var response = await http.get(Uri.parse(
-        'https://webapi.bps.go.id/v1/api/list/model/publication/lang/ind/domain/3516/key/3f07c05929293e0074b543e390b82178/'));
+    var response = await http
+        .get(Uri.parse('http://192.168.18.12:8000/api/publikasi-all'));
     if (response.statusCode == 200) {
-      var data = jsonDecode(response.body)['data'][1];
+      var data = jsonDecode(response.body)['data'];
       print(data);
       return compute(parsePublikasi, response.body);
     } else {
@@ -290,46 +291,58 @@ class PublikasiPage extends StatelessWidget {
                                   itemBuilder: ((context, index) {
                                     return Row(
                                       children: [
-                                        Column(
-                                          children: [
-                                            Container(
-                                              margin: EdgeInsets.only(
-                                                left: 22,
-                                                right: 24,
-                                              ),
-                                              width: 110,
-                                              height: 155,
-                                              decoration: BoxDecoration(
-                                                color: Color(0xffD4E5FF),
-                                                borderRadius:
-                                                    BorderRadius.circular(9),
-                                              ),
-                                              child: Image.network(
-                                                '${snapshot.data[index].cover}',
-                                              ),
-                                            ),
-                                            Container(
-                                              margin: EdgeInsets.only(
-                                                top: 20,
-                                                left: 12,
-                                              ),
-                                              width: 206,
-                                              height: 60,
-                                              decoration: BoxDecoration(
-                                                borderRadius:
-                                                    BorderRadius.circular(9),
-                                              ),
-                                              child: Text(
-                                                '${snapshot.data[index].title}',
-                                                textAlign: TextAlign.center,
-                                                style: GoogleFonts.nunitoSans(
-                                                  fontWeight: bold,
-                                                  color: Color(0xff333333),
-                                                  fontSize: 13,
+                                        GestureDetector(
+                                          onTap: () {
+                                            Navigator.push(
+                                                context,
+                                                MaterialPageRoute(
+                                                    builder: (context) =>
+                                                        PublikasiDetail(
+                                                            index: snapshot
+                                                                .data[index]
+                                                                .pubId)));
+                                          },
+                                          child: Column(
+                                            children: [
+                                              Container(
+                                                margin: EdgeInsets.only(
+                                                  left: 22,
+                                                  right: 24,
+                                                ),
+                                                width: 110,
+                                                height: 155,
+                                                decoration: BoxDecoration(
+                                                  color: Color(0xffD4E5FF),
+                                                  borderRadius:
+                                                      BorderRadius.circular(9),
+                                                ),
+                                                child: Image.network(
+                                                  '${snapshot.data[index].cover}',
                                                 ),
                                               ),
-                                            ),
-                                          ],
+                                              Container(
+                                                margin: EdgeInsets.only(
+                                                  top: 20,
+                                                  left: 12,
+                                                ),
+                                                width: 206,
+                                                height: 60,
+                                                decoration: BoxDecoration(
+                                                  borderRadius:
+                                                      BorderRadius.circular(9),
+                                                ),
+                                                child: Text(
+                                                  '${snapshot.data[index].title}',
+                                                  textAlign: TextAlign.center,
+                                                  style: GoogleFonts.nunitoSans(
+                                                    fontWeight: bold,
+                                                    color: Color(0xff333333),
+                                                    fontSize: 13,
+                                                  ),
+                                                ),
+                                              ),
+                                            ],
+                                          ),
                                         )
                                       ],
                                     );
@@ -526,46 +539,64 @@ class PublikasiPage extends StatelessWidget {
                                                             Positioned(
                                                               left: 216,
                                                               top: 146,
-                                                              child: Container(
-                                                                width: 111,
-                                                                height: 31,
-                                                                child: Stack(
-                                                                  children: [
-                                                                    Positioned
-                                                                        .fill(
-                                                                      child:
-                                                                          Align(
+                                                              child:
+                                                                  GestureDetector(
+                                                                onTap:
+                                                                    (() async {
+                                                                  var url =
+                                                                      '${snapshot.data[index].pdf}';
+                                                                  final uri =
+                                                                      Uri.parse(
+                                                                          url);
+                                                                  if (await canLaunchUrl(
+                                                                      uri)) {
+                                                                    await launchUrl(
+                                                                      uri,
+                                                                      mode: LaunchMode
+                                                                          .externalApplication,
+                                                                    );
+                                                                  } else {
+                                                                    throw 'Could not launch $uri';
+                                                                  }
+                                                                }),
+                                                                child:
+                                                                    Container(
+                                                                  width: 111,
+                                                                  height: 31,
+                                                                  child: Stack(
+                                                                    children: [
+                                                                      Positioned
+                                                                          .fill(
                                                                         child:
-                                                                            Text(
-                                                                          "Unduh Sekarang",
-                                                                          style:
-                                                                              TextStyle(
-                                                                            color:
-                                                                                Color(0xff00192c),
-                                                                            fontSize:
-                                                                                12,
-                                                                            fontFamily:
-                                                                                "Nunito Sans",
-                                                                            fontWeight:
-                                                                                FontWeight.w700,
+                                                                            Align(
+                                                                          child:
+                                                                              Text(
+                                                                            "Unduh Sekarang",
+                                                                            style:
+                                                                                TextStyle(
+                                                                              color: Color(0xff00192c),
+                                                                              fontSize: 12,
+                                                                              fontFamily: "Nunito Sans",
+                                                                              fontWeight: FontWeight.w700,
+                                                                            ),
                                                                           ),
                                                                         ),
                                                                       ),
-                                                                    ),
-                                                                    Container(
-                                                                      width:
-                                                                          111,
-                                                                      height:
-                                                                          31,
-                                                                      decoration:
-                                                                          BoxDecoration(
-                                                                        borderRadius:
-                                                                            BorderRadius.circular(13),
-                                                                        color: Color(
-                                                                            0x6671c3ff),
+                                                                      Container(
+                                                                        width:
+                                                                            111,
+                                                                        height:
+                                                                            31,
+                                                                        decoration:
+                                                                            BoxDecoration(
+                                                                          borderRadius:
+                                                                              BorderRadius.circular(13),
+                                                                          color:
+                                                                              Color(0x6671c3ff),
+                                                                        ),
                                                                       ),
-                                                                    ),
-                                                                  ],
+                                                                    ],
+                                                                  ),
                                                                 ),
                                                               ),
                                                             ),

@@ -14,7 +14,7 @@ class InfografisPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     List<InfografisModel> parseInfografis(String response) {
-      var list = jsonDecode(response)['data'][1] as List<dynamic>;
+      var list = jsonDecode(response)['data'] as List<dynamic>;
       List<InfografisModel> infografis =
           list.map((infografi) => InfografisModel.fromJson(infografi)).toList();
       print(infografis.length);
@@ -22,10 +22,10 @@ class InfografisPage extends StatelessWidget {
     }
 
     Future<List<InfografisModel>> fetchInfografis() async {
-      var response = await http.get(Uri.parse(
-          'https://webapi.bps.go.id/v1/api/list/model/infographic/lang/ind/domain/3516/key/3f07c05929293e0074b543e390b82178/'));
+      var response = await http
+          .get(Uri.parse('http://192.168.18.12:8000/api/infografis-all'));
       if (response.statusCode == 200) {
-        var data = jsonDecode(response.body)['data'][1];
+        var data = jsonDecode(response.body)['data'];
         print(data);
         return compute(parseInfografis, response.body);
       } else {

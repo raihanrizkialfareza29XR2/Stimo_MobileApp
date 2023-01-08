@@ -7,6 +7,7 @@ import 'package:flutter/src/widgets/framework.dart';
 import 'package:stimo/models/publikasi_models.dart';
 import 'package:stimo/theme.dart';
 import 'package:http/http.dart' as http;
+import 'package:url_launcher/url_launcher.dart';
 
 class PublikasiDetail extends StatelessWidget {
   final String index;
@@ -93,11 +94,26 @@ class PublikasiDetail extends StatelessWidget {
                                       ),
                                       child: Container(
                                         margin: EdgeInsets.all(10),
-                                        child: Text('Unduh Publikasi',
-                                            style: whiteTextStyle.copyWith(
-                                              fontWeight: bold,
-                                              fontSize: 10,
-                                            )),
+                                        child: GestureDetector(
+                                          onTap: (() async {
+                                            var url = '${snapshot.data.pdf}';
+                                            final uri = Uri.parse(url);
+                                            if (await canLaunchUrl(uri)) {
+                                              await launchUrl(
+                                                uri,
+                                                mode: LaunchMode
+                                                    .externalApplication,
+                                              );
+                                            } else {
+                                              throw 'Could not launch $uri';
+                                            }
+                                          }),
+                                          child: Text('Unduh Publikasi',
+                                              style: whiteTextStyle.copyWith(
+                                                fontWeight: bold,
+                                                fontSize: 10,
+                                              )),
+                                        ),
                                       ),
                                     ),
                                     Container(
@@ -111,11 +127,19 @@ class PublikasiDetail extends StatelessWidget {
                                       ),
                                       child: Container(
                                         margin: EdgeInsets.all(10),
-                                        child: Text(
-                                          'Publikasi Lainnya',
-                                          style: blackTextStyle.copyWith(
-                                            fontWeight: bold,
-                                            fontSize: 10,
+                                        child: GestureDetector(
+                                          onTap: () {
+                                            Navigator.pushNamed(
+                                              context,
+                                              '/publikasi',
+                                            );
+                                          },
+                                          child: Text(
+                                            'Publikasi Lainnya',
+                                            style: blackTextStyle.copyWith(
+                                              fontWeight: bold,
+                                              fontSize: 10,
+                                            ),
                                           ),
                                         ),
                                       ),

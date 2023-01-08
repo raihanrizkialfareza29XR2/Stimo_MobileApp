@@ -3,6 +3,7 @@ import 'package:provider/provider.dart';
 import 'package:stimo/pages/BRS_detail.dart';
 import 'package:stimo/pages/berita_resmi_page.dart';
 import 'package:stimo/pages/grafik_page.dart';
+import 'package:stimo/pages/indikator_chart.dart';
 import 'package:stimo/pages/indikator_strategis.dart';
 import 'package:stimo/pages/infografis_page.dart';
 import 'package:stimo/pages/onboarding_page.dart';
@@ -35,6 +36,9 @@ class MyApp extends StatelessWidget {
           '/tabel': (context) => TabelPage(),
           '/grafik': (context) => GrafikPage(),
           '/indikator': (context) => IndikatorStrategis(),
+          '/indikator-chart': (context) => IndikatorChart(
+                index: 1,
+              ),
           '/publikasi': (context) => PublikasiPage(),
           '/beritaresmi': (context) => BeritaResmi(),
           '/infografis': (context) => InfografisPage(),

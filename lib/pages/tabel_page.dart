@@ -16,7 +16,7 @@ class TabelPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     List<TabelModel> parseTabel(String response) {
-      var list = jsonDecode(response)['data'][1] as List<dynamic>;
+      var list = jsonDecode(response)['data'] as List<dynamic>;
       List<TabelModel> tabels =
           list.map((tabel) => TabelModel.fromJson(tabel)).toList();
       print(tabels.length);
@@ -24,8 +24,8 @@ class TabelPage extends StatelessWidget {
     }
 
     Future<List<TabelModel>> fetchTabel() async {
-      var response = await http.get(Uri.parse(
-          'https://webapi.bps.go.id/v1/api/list/model/news/lang/ind/domain/3516/key/3f07c05929293e0074b543e390b82178/'));
+      var response =
+          await http.get(Uri.parse('http://192.168.18.12:8000/api/tabel-all'));
       if (response.statusCode == 200) {
         print(response.body);
         return compute(parseTabel, response.body);
